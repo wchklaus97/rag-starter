@@ -160,6 +160,43 @@
         <a href="../index.html">← Back to field guide</a>
         &nbsp;·&nbsp; Static site — <code class="font-mono">rag_model_site/</code>
       </p>
+      <p class="footer-updated muted" id="hub-footer-updated" hidden>
+        <span class="footer-updated__label">Last updated:</span>
+        <time id="hub-site-last-updated" class="footer-updated__time"></time>
+      </p>
     </footer>
+    <script>
+      (function () {
+        var timeEl = document.getElementById("hub-site-last-updated");
+        var row = document.getElementById("hub-footer-updated");
+        if (!timeEl || !row) return;
+        fetch("../data/models.json")
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (d) {
+            var t = d && d.updated;
+            if (!t) {
+              row.hidden = true;
+              return;
+            }
+            var raw = String(t).trim();
+            var dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(raw);
+            var dt = dateOnly ? new Date(raw + "T12:00:00Z") : new Date(raw);
+            if (isNaN(dt.getTime())) {
+              timeEl.textContent = raw;
+            } else {
+              timeEl.dateTime = dt.toISOString();
+              timeEl.textContent = dateOnly
+                ? dt.toLocaleDateString(undefined, { dateStyle: "long" })
+                : dt.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+            }
+            row.hidden = false;
+          })
+          .catch(function () {
+            row.hidden = true;
+          });
+      })();
+    </script>
   </body>
 </html>

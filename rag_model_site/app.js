@@ -80,6 +80,30 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
+const LOCALE_FOR_LANG = { en: "en-US", zh: "zh-TW", zh_hans: "zh-CN" };
+
+/**
+ * @param {string} raw date-only YYYY-MM-DD or ISO 8601 with time
+ * @returns {{ text: string, iso: string }}
+ */
+function formatUpdatedDisplay(raw, lang) {
+  if (!raw || typeof raw !== "string") return { text: "", iso: "" };
+  const trimmed = raw.trim();
+  let d;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    d = new Date(`${trimmed}T12:00:00Z`);
+  } else {
+    d = new Date(trimmed);
+  }
+  if (Number.isNaN(d.getTime())) return { text: trimmed, iso: trimmed };
+  const loc = LOCALE_FOR_LANG[lang] || "en-US";
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(trimmed);
+  const text = dateOnly
+    ? d.toLocaleDateString(loc, { dateStyle: "long" })
+    : d.toLocaleString(loc, { dateStyle: "medium", timeStyle: "short" });
+  return { text, iso: d.toISOString() };
+}
+
 function modelMatches(m) {
   if (state.filterTag !== "all" && !m.tags?.includes(state.filterTag)) {
     return false;
@@ -314,15 +338,43 @@ function renderTesting() {
 }
 
 function renderUpdated() {
+  const raw = state.data?.updated;
   const el = document.getElementById("data-updated");
-  if (!el) return;
-  const d = state.data.updated;
-  if (d) {
-  const prefix = state.lang === "zh" ? "資料日期：" : state.lang === "zh_hans" ? "数据日期：" : "Data snapshot: ";
-    el.textContent = prefix + d;
-  } else {
-    el.textContent = "";
+  const timeEl = document.getElementById("site-last-updated");
+  const footerLine = document.getElementById("footer-updated-line");
+
+  if (!raw) {
+    if (el) el.textContent = "";
+    if (timeEl) {
+      timeEl.removeAttribute("datetime");
+      timeEl.textContent = "";
+    }
+    if (footerLine) footerLine.hidden = true;
+    return;
   }
+
+  const { text, iso } = formatUpdatedDisplay(String(raw), state.lang);
+  if (!text) {
+    if (el) el.textContent = "";
+    if (timeEl) {
+      timeEl.removeAttribute("datetime");
+      timeEl.textContent = "";
+    }
+    if (footerLine) footerLine.hidden = true;
+    return;
+  }
+
+  if (el) {
+    const cap = t("dataSnapshotLabel");
+    const prefix = cap === "dataSnapshotLabel" ? "Data snapshot:" : cap;
+    el.textContent = `${prefix} ${text}`;
+  }
+
+  if (timeEl) {
+    timeEl.dateTime = iso;
+    timeEl.textContent = text;
+  }
+  if (footerLine) footerLine.hidden = false;
 }
 
 function renderChips() {

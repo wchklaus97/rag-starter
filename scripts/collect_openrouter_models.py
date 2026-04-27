@@ -19,7 +19,7 @@ import os
 import sys
 import urllib.error
 import urllib.request
-from datetime import date
+from datetime import datetime, timezone
 from pathlib import Path
 
 OPENROUTER_EMBEDDINGS_MODELS = "https://openrouter.ai/api/v1/embeddings/models"
@@ -168,7 +168,7 @@ def main() -> int:
     models = payload.get("models") or []
     payload["models"] = merge_models(models, api_by_id, strict=strict)
     payload["version"] = payload.get("version", 1)
-    payload["updated"] = str(date.today())
+    payload["updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     payload["sourceNote"] = (
         "Refreshed from OpenRouter GET /v1/embeddings/models. Bilingual copy is hand-maintained in this file."
     )

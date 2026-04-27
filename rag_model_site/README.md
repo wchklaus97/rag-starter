@@ -16,7 +16,7 @@ Use the header **Map** control (§) to open a **guide map** overlay: it shows wh
 - `assets/design-tokens.css` — runtime CSS variables
 - `assets/design-tokens.json` — human-readable token inventory
 - `app.js` — filters, language toggle, static JSON loading
-- `data/models.json` — model prices, strengths, use cases, source links
+- `data/models.json` — model prices, strengths, use cases, source links; top-level **`updated`** is UTC (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SSZ`) for the footer and methodology “snapshot” line
 - `data/public_examples.json` — public/network source examples mapped to recommended embedding models
 - `data/agent_framework_guide.json` — agent stack map, wizard weights, and UI strings (educational; verify vendors independently)
 - `OPENROUTER_EMBEDDING_MODELS.md` — long-form notes copied from the repo root

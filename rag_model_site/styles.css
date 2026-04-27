@@ -849,6 +849,21 @@ body.section-map-open {
   max-width: none;
 }
 
+.footer-updated {
+  margin: var(--space-md) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+}
+
+.footer-updated__time {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
 /* ==== In-page nav & agent guide ======================================= */
 
 .content-region {

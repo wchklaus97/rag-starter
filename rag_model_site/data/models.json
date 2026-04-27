@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-04-26",
+  "updated": "2026-04-27T18:48:03Z",
   "sourceNote": "Prices and details are approximations. Run scripts/collect_openrouter_models.py to refresh from OpenRouter.",
   "ui": {
     "en": {
@@ -39,6 +39,8 @@
       "navRagRag": "RAG & embeddings",
       "navRagAgent": "Agent frameworks",
       "footer": "Static JSON in this folder (models + agent_framework_guide). No API calls in the browser.",
+      "dataSnapshotLabel": "Data snapshot:",
+      "lastUpdatedLabel": "Last updated:",
       "themeLabel": "Color theme",
       "themeToDark": "Use dark theme",
       "themeToLight": "Use light theme",
@@ -101,6 +103,8 @@
       "navRagRag": "RAG 與嵌入模型",
       "navRagAgent": "Agent 框架",
       "footer": "資料為此目錄下靜態 JSON（ models 與 agent_framework_guide ），瀏覽器內不呼叫 API。",
+      "dataSnapshotLabel": "資料快照：",
+      "lastUpdatedLabel": "最後更新：",
       "themeLabel": "顏色主題",
       "themeToDark": "使用深色主題",
       "themeToLight": "使用淺色主題",
@@ -163,6 +167,8 @@
       "navRagRag": "RAG 与嵌入模型",
       "navRagAgent": "Agent 框架",
       "footer": "数据来自本目录下静态 JSON（models 与 agent_framework_guide），浏览器内不调用 API。",
+      "dataSnapshotLabel": "数据快照：",
+      "lastUpdatedLabel": "最后更新：",
       "themeLabel": "颜色主题",
       "themeToDark": "使用深色主题",
       "themeToLight": "使用浅色主题",
