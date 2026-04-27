@@ -9,6 +9,9 @@ Uses: GET https://openrouter.ai/api/v1/embeddings/models
 Preserves: ui, recommendations, testingPlan, and per-model bilingual fields (strengths, bestFor,
 longNote, tags) from the existing JSON. Updates: pricePerMillionInputTokens, outputPricePerMillionTokens,
 provider (from id prefix if missing), sourceUrls, and schema version metadata.
+
+Optional: --include-all-api-models appends any API embedding id not already listed, with tag
+openrouterCatalog and minimal bilingual stubs (for a full browseable catalog on the static site).
 """
 
 from __future__ import annotations
@@ -115,6 +118,88 @@ def merge_models(curated: list[dict], api_by_id: dict[str, dict], strict: bool) 
     return out
 
 
+def _api_blurb_en(api: dict) -> str:
+    """Best-effort English blurb from OpenRouter listing (shape varies)."""
+    for key in ("description", "name"):
+        v = api.get(key)
+        if isinstance(v, str) and v.strip():
+            return v.strip()[:800]
+    return ""
+
+
+def minimal_row_from_api(api: dict) -> dict:
+    """Hand-written bilingual fields omitted: safe defaults for browse-only catalog rows."""
+    mid = api.get("id")
+    if not mid:
+        raise ValueError("api model missing id")
+    p_in, p_out = _parse_price_per_million(api.get("pricing") or {})
+    details = (api.get("links") or {}).get("details")
+    primary = _source_url(api)
+    urls: list = []
+    if primary:
+        urls.append(primary)
+    if details and details not in urls:
+        urls.append(details)
+    blurb = _api_blurb_en(api)
+    strength_en = (
+        blurb
+        if blurb
+        else "Imported from OpenRouter GET /v1/embeddings/models. Edit strengths, bestFor, and longNote in models.json for richer copy."
+    )
+    strength_zh = (
+        blurb
+        if blurb
+        else "來自 OpenRouter GET /v1/embeddings/models。可在 models.json 編寫更完整的優勢與說明。"
+    )
+    strength_hans = (
+        blurb
+        if blurb
+        else "来自 OpenRouter GET /v1/embeddings/models。可在 models.json 补充更完整说明。"
+    )
+    bf_en = "Retrieval / RAG via OpenRouter embeddings API."
+    bf_zh = "透過 OpenRouter 嵌入 API 做檢索／RAG。"
+    bf_hans = "通过 OpenRouter 嵌入 API 做检索／RAG。"
+    row: dict = {
+        "id": mid,
+        "provider": _provider_from_id(mid),
+        "pricePerMillionInputTokens": float(p_in) if p_in > 0 else 0.0,
+        "outputPricePerMillionTokens": float(p_out) if p_out > 0 else 0.0,
+        "tags": ["openrouterCatalog"],
+        "strengths": {"en": strength_en, "zh": strength_zh, "zh_hans": strength_hans},
+        "bestFor": {"en": bf_en, "zh": bf_zh, "zh_hans": bf_hans},
+        "longNote": {
+            "en": "Catalog-only row. Compare pricing on OpenRouter before production.",
+            "zh": "僅目錄列。正式使用前請在 OpenRouter 確認價格與條款。",
+            "zh_hans": "仅目录行。正式使用前请在 OpenRouter 确认价格和条款。",
+        },
+        "sourceUrls": urls or ["https://openrouter.ai/collections/embedding-models"],
+    }
+    return row
+
+
+def merge_models_with_optional_catalog(
+    curated: list[dict],
+    api_by_id: dict[str, dict],
+    strict: bool,
+    include_all_api_models: bool,
+) -> list[dict]:
+    base = merge_models(curated, api_by_id, strict=strict)
+    if not include_all_api_models:
+        return base
+    seen = {r["id"] for r in base if r.get("id")}
+    extras: list[dict] = []
+    for mid in sorted(api_by_id.keys()):
+        if mid in seen:
+            continue
+        extras.append(minimal_row_from_api(api_by_id[mid]))
+    if extras:
+        print(
+            f"Appending {len(extras)} API-only embedding model(s) (tag: openrouterCatalog).",
+            file=sys.stderr,
+        )
+    return base + extras
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Refresh OpenRouter embedding data into models.json")
     parser.add_argument(
@@ -138,8 +223,20 @@ def main() -> int:
         action="store_true",
         help="Do not copy OPENROUTER_EMBEDDING_MODELS.md from repo root to rag_model_site/",
     )
+    parser.add_argument(
+        "--include-all-api-models",
+        action="store_true",
+        help="Append every embedding model returned by the API that is not already in models.json "
+        "(tag: openrouterCatalog; minimal bilingual stubs).",
+    )
     args = parser.parse_args()
-    output, dry, strict, no_sync = args.output, args.dry_run, args.strict, args.no_sync_md
+    output, dry, strict, no_sync, include_all = (
+        args.output,
+        args.dry_run,
+        args.strict,
+        args.no_sync_md,
+        args.include_all_api_models,
+    )
 
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     if not api_key:
@@ -166,12 +263,20 @@ def main() -> int:
 
     payload = json.loads(output.read_text(encoding="utf-8"))
     models = payload.get("models") or []
-    payload["models"] = merge_models(models, api_by_id, strict=strict)
+    payload["models"] = merge_models_with_optional_catalog(
+        models, api_by_id, strict=strict, include_all_api_models=include_all
+    )
     payload["version"] = payload.get("version", 1)
     payload["updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    payload["sourceNote"] = (
-        "Refreshed from OpenRouter GET /v1/embeddings/models. Bilingual copy is hand-maintained in this file."
-    )
+    if include_all:
+        payload["sourceNote"] = (
+            "Refreshed from OpenRouter GET /v1/embeddings/models; includes API-only rows tagged "
+            "openrouterCatalog (minimal copy). Hand-maintained fields preserved for curated models."
+        )
+    else:
+        payload["sourceNote"] = (
+            "Refreshed from OpenRouter GET /v1/embeddings/models. Bilingual copy is hand-maintained in this file."
+        )
 
     if not no_sync and MD_ROOT.is_file() and not dry:
         MD_DOCS.write_text(MD_ROOT.read_text(encoding="utf-8"), encoding="utf-8")

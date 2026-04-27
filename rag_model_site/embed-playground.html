@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Try embedding · RAG field guide</title>
+    <script>
+      (function () {
+        try {
+          var k = "rag-field-guide-theme";
+          var t = localStorage.getItem(k);
+          var d = document.documentElement;
+          if (t === "light" || t === "dark") d.setAttribute("data-theme", t);
+          else if (window.matchMedia("(prefers-color-scheme: dark)").matches) d.setAttribute("data-theme", "dark");
+          else d.setAttribute("data-theme", "light");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="assets/design-tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .ep-panel {
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: var(--space-lg);
+      }
+      .ep-panel label {
+        display: block;
+        font-weight: 600;
+        margin-top: var(--space-md);
+        margin-bottom: var(--space-xs);
+      }
+      .ep-panel input[type="text"],
+      .ep-panel select,
+      .ep-panel textarea {
+        width: 100%;
+        font: inherit;
+        padding: var(--space-sm) var(--space-md);
+        border: 1px solid var(--control-border);
+        border-radius: var(--primitive-radius-sm, 0.35rem);
+        background: var(--control-bg);
+        color: var(--color-text);
+      }
+      .ep-panel textarea {
+        min-height: 7rem;
+        resize: vertical;
+      }
+      .ep-actions {
+        margin-top: var(--space-md);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-md);
+        align-items: center;
+      }
+      .ep-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        min-height: 2.5rem;
+        padding: 0 var(--space-lg);
+        border: 1px solid var(--control-border);
+        border-radius: var(--p-r-pill, 999px);
+        background: var(--control-bg);
+        color: var(--color-text);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .ep-out {
+        margin-top: var(--space-lg);
+        padding: var(--space-md);
+        border: 1px solid var(--panel-border);
+        border-radius: var(--panel-radius);
+        background: color-mix(in oklch, var(--color-text) 4%, var(--color-bg));
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 24rem;
+        overflow: auto;
+      }
+      .ep-warn {
+        padding: var(--space-md);
+        border-radius: var(--panel-radius);
+        border: 1px solid color-mix(in oklch, var(--color-accent) 35%, var(--panel-border));
+        background: color-mix(in oklch, var(--color-accent) 8%, var(--color-bg));
+        margin-bottom: var(--space-lg);
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" role="banner">
+      <div class="header-inner">
+        <div class="header-titles">
+          <p class="eyebrow">OpenRouter · local only</p>
+          <h1 id="page-title">Try an embedding</h1>
+          <p class="lede">
+            Sends text through a <strong>local proxy</strong> so your API key never ships in static HTML.
+            <a href="index.html">← Back to field guide</a>
+          </p>
+        </div>
+      </div>
+    </header>
+    <main id="main" class="main ep-panel">
+      <div class="ep-warn" role="note">
+        <strong>Before you start:</strong> run
+        <code class="font-mono">uv run&nbsp;python embed_proxy/openrouter_embed_proxy.py</code>
+        from the repo root with <code class="font-mono">OPENROUTER_API_KEY</code> set. This page must be served over
+        http(s) (e.g. <code class="font-mono">python3 -m http.server</code> from <code class="font-mono">rag_model_site/</code>). See
+        <a href="https://github.com/wchklaus97/rag-starter/blob/main/embed_proxy/README.md" rel="noopener noreferrer">embed_proxy/README.md</a>.
+      </div>
+
+      <label for="proxy-base">Proxy base URL</label>
+      <input type="text" id="proxy-base" name="proxy-base" autocomplete="off" value="http://127.0.0.1:8790" />
+
+      <label for="model-id">Model id</label>
+      <select id="model-id" name="model-id"></select>
+
+      <label for="input-text">Input text</label>
+      <textarea id="input-text" name="input-text" placeholder="Short phrase or paragraph to embed…"></textarea>
+
+      <div class="ep-actions">
+        <button type="button" class="ep-btn" id="send-btn">Send to OpenRouter</button>
+        <span class="muted" id="status-line" aria-live="polite"></span>
+      </div>
+
+      <pre class="ep-out" id="response-out" hidden></pre>
+    </main>
+
+    <script>
+      (function () {
+        const PROXY_KEY = "rag-embed-playground-proxy";
+        const baseInput = document.getElementById("proxy-base");
+        const sel = document.getElementById("model-id");
+        const ta = document.getElementById("input-text");
+        const btn = document.getElementById("send-btn");
+        const out = document.getElementById("response-out");
+        const status = document.getElementById("status-line");
+
+        var saved = null;
+        try {
+          saved = localStorage.getItem(PROXY_KEY);
+        } catch (e) {
+          saved = null;
+        }
+        if (saved) baseInput.value = saved;
+
+        function rememberProxy() {
+          try {
+            localStorage.setItem(PROXY_KEY, baseInput.value.trim());
+          } catch (e) {
+            /* ignore */
+          }
+        }
+
+        fetch("data/models.json", { cache: "no-store" })
+          .then(function (r) {
+            if (!r.ok) throw new Error("models.json " + r.status);
+            return r.json();
+          })
+          .then(function (data) {
+            var models = (data && data.models) || [];
+            var ids = models
+              .map(function (m) {
+                return m.id;
+              })
+              .filter(Boolean)
+              .sort();
+            ids.forEach(function (id) {
+              var o = document.createElement("option");
+              o.value = id;
+              o.textContent = id;
+              sel.appendChild(o);
+            });
+          })
+          .catch(function () {
+            var o = document.createElement("option");
+            o.value = "openai/text-embedding-3-small";
+            o.textContent = o.value;
+            sel.appendChild(o);
+          });
+
+        btn.addEventListener("click", function () {
+          rememberProxy();
+          var base = baseInput.value.replace(/\/$/, "");
+          var model = sel.value;
+          var input = ta.value;
+          if (!base || !model || !input.trim()) {
+            status.textContent = "Fill proxy URL, model, and input.";
+            return;
+          }
+          status.textContent = "Requesting…";
+          out.hidden = true;
+          fetch(base + "/api/embed", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ model: model, input: input }),
+          })
+            .then(function (r) {
+              return r.text().then(function (t) {
+                return { ok: r.ok, status: r.status, text: t };
+              });
+            })
+            .then(function (res) {
+              var body;
+              try {
+                body = JSON.parse(res.text);
+              } catch (e) {
+                body = { raw: res.text };
+              }
+              out.textContent = JSON.stringify(body, null, 2);
+              out.hidden = false;
+              status.textContent = res.ok ? "Done." : "Error HTTP " + res.status;
+            })
+            .catch(function (e) {
+              out.textContent = String(e.message || e);
+              out.hidden = false;
+              status.textContent = "Network error — is the proxy running?";
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>

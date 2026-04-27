@@ -11,6 +11,7 @@ Use the header **Map** control (§) to open a **guide map** overlay: it shows wh
 ## Files
 
 - `index.html` — static page shell
+- `embed-playground.html` — optional local UI for `POST /api/v1/embeddings` via [`../embed_proxy/README.md`](../embed_proxy/README.md) (not used on GitHub Pages without your own proxy host)
 - `styles.css` — technical lab notebook visual style
 - `DESIGN_SYSTEM.md` — token architecture and component specs
 - `assets/design-tokens.css` — runtime CSS variables
@@ -40,6 +41,7 @@ From the repo root:
 ```bash
 export OPENROUTER_API_KEY="sk-or-..."
 uv run python scripts/collect_openrouter_models.py
+# optional: --include-all-api-models  # merge in every id from OpenRouter's embeddings list not already in models.json
 ```
 
 This updates `rag_model_site/data/models.json` and syncs the long-form Markdown copy into this folder.

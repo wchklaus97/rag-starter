@@ -154,7 +154,10 @@ Requires an OpenRouter API key (`OPENROUTER_API_KEY`). This updates USD fields a
 export OPENROUTER_API_KEY="sk-or-..."
 uv run python scripts/collect_openrouter_models.py
 # optional: --dry-run  # print JSON without writing
+# optional: --include-all-api-models  # append OpenRouter embedding ids not yet in models.json (minimal copy + openrouterCatalog tag)
 ```
+
+**Live embedding playground (local only):** the static Pages site does not expose your API key. Use [`embed_proxy/README.md`](./embed_proxy/README.md) to run a localhost proxy, then open [`rag_model_site/embed-playground.html`](./rag_model_site/embed-playground.html) via a local server (same as the field guide preview).
 
 The Streamlit **Embedding model guide** tab also reads `rag_model_site/data/public_examples.json`, which maps public/network data sources to suggested embedding models. These are source suggestions only; check the license and terms before copying content into `demo_docs/`.
 

@@ -11,6 +11,7 @@ This site is **static HTML + JSON** on **GitHub Pages** (no app router). The inf
 | `/en/guides/` | Redirect to `/guides/` (English hub). |
 | `/zh/guides/` | Redirect to `/?lang=zh` (Traditional Chinese UI on the main page). |
 | `/zh-hans/guides/` | Redirect to `/?lang=zh_hans` (Simplified Chinese UI on the main page). |
+| `/embed-playground.html` | Optional **local** embedding API try-it page: expects a running [`embed_proxy`](../embed_proxy/README.md) (not a runtime dependency of the main guide on Pages). |
 
 ## Query
 

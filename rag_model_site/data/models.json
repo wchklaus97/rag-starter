@@ -41,6 +41,8 @@
       "footer": "Static JSON in this folder (models + agent_framework_guide). No API calls in the browser.",
       "dataSnapshotLabel": "Data snapshot:",
       "lastUpdatedLabel": "Last updated:",
+      "embedPlaygroundLink": "Try embedding (local proxy)",
+      "embedPlaygroundNote": "— requires local proxy + API key; see repo embed_proxy/README.md.",
       "themeLabel": "Color theme",
       "themeToDark": "Use dark theme",
       "themeToLight": "Use light theme",
@@ -63,7 +65,8 @@
         "enterprise": "Enterprise KB",
         "production": "Production",
         "devdocs": "API / SDK docs",
-        "general": "General RAG"
+        "general": "General RAG",
+        "openrouterCatalog": "OpenRouter catalog"
       }
     },
     "zh": {
@@ -105,6 +108,8 @@
       "footer": "資料為此目錄下靜態 JSON（ models 與 agent_framework_guide ），瀏覽器內不呼叫 API。",
       "dataSnapshotLabel": "資料快照：",
       "lastUpdatedLabel": "最後更新：",
+      "embedPlaygroundLink": "試試嵌入（本機代理）",
+      "embedPlaygroundNote": "— 需本機代理與 API 金鑰；見專案 embed_proxy/README.md。",
       "themeLabel": "顏色主題",
       "themeToDark": "使用深色主題",
       "themeToLight": "使用淺色主題",
@@ -127,7 +132,8 @@
         "enterprise": "企業知識庫",
         "production": "正式環境",
         "devdocs": "API / SDK 文件",
-        "general": "泛用 RAG"
+        "general": "泛用 RAG",
+        "openrouterCatalog": "OpenRouter 目錄"
       }
     },
     "zh_hans": {
@@ -169,6 +175,8 @@
       "footer": "数据来自本目录下静态 JSON（models 与 agent_framework_guide），浏览器内不调用 API。",
       "dataSnapshotLabel": "数据快照：",
       "lastUpdatedLabel": "最后更新：",
+      "embedPlaygroundLink": "试用嵌入（本地代理）",
+      "embedPlaygroundNote": "— 需要本地代理和 API 密钥；见仓库 embed_proxy/README.md。",
       "themeLabel": "颜色主题",
       "themeToDark": "使用深色主题",
       "themeToLight": "使用浅色主题",
@@ -191,7 +199,8 @@
         "enterprise": "企业知识库",
         "production": "正式环境",
         "devdocs": "API / SDK 文档",
-        "general": "通用 RAG"
+        "general": "通用 RAG",
+        "openrouterCatalog": "OpenRouter 目录"
       }
     }
   },

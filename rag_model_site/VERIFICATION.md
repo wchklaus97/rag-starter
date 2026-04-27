@@ -1,6 +1,6 @@
 # RAG model site — verification
 
-The published site is static: it only loads `data/models.json` and `data/public_examples.json`; it has **no** runtime calls to OpenRouter or other APIs. Use this checklist before you point others at GitHub Pages.
+The published **main guide** (`index.html`) is static: it loads `data/models.json` and related JSON; it has **no** runtime calls to OpenRouter. The optional **`embed-playground.html`** page calls a **local** proxy you run yourself (see `embed_proxy/`). Use this checklist before you point others at GitHub Pages.
 
 ## Local preview
 
@@ -22,7 +22,7 @@ Open `http://127.0.0.1:8765/` in a browser. (Opening `index.html` as a `file://`
 5. **Markdown** — The link to `OPENROUTER_EMBEDDING_MODELS.md` in the “Sources & reference” section should download or display the file on GitHub Pages.
 6. **Responsive** — Narrow the window to ~360px: layout should not overflow horizontally; model grid should stack.
 7. **Guide map (Map / §)** — Open the header control: overlay lists sections, “current focus” matches scroll, one row is highlighted, **Escape** and backdrop close the dialog; section links jump and close the overlay. When agent content is loaded, the **Agent frameworks** row appears.
-8. **No network dependency** — In DevTools → Network, confirm there are no XHR/fetch calls except `data/models.json`, `data/public_examples.json`, and fonts from Google (optional: self-host fonts later to remove that request).
+8. **No surprise third-party APIs on the main guide** — On `index.html`, in DevTools → Network, confirm there are no XHR/fetch calls except `data/models.json`, `data/public_examples.json`, agent/guide JSON as applicable, and fonts from Google (optional: self-host fonts later). If you open `embed-playground.html`, expect fetches to your configured proxy base URL as well.
 
 ## Optional: Playwright
 
