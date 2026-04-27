@@ -1,0 +1,18 @@
+[project]
+name = "rag-starter"
+version = "0.1.0"
+description = "Rust and Python RAG starter with a Streamlit internal KB demo."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "anthropic",
+  "numpy",
+  "openai",
+  "python-dotenv",
+  "streamlit",
+]
+
+[dependency-groups]
+dev = [
+  "pytest",
+]

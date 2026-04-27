@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="RAG embedding model field guide plus a multilingual AI agent framework chooser: protocols, patterns, and five steps to shortlist a stack." />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f7f4ef" id="meta-theme-color" />
+    <title>RAG Model Field Guide · Agent framework map</title>
+    <script>
+      (function () {
+        try {
+          var k = "rag-field-guide-theme";
+          var t = localStorage.getItem(k);
+          var d = document.documentElement;
+          if (t === "light" || t === "dark") d.setAttribute("data-theme", t);
+          else if (window.matchMedia("(prefers-color-scheme: dark)").matches) d.setAttribute("data-theme", "dark");
+          else d.setAttribute("data-theme", "light");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="assets/design-tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" role="banner">
+      <div class="header-inner">
+        <div class="header-titles">
+          <p class="eyebrow" data-i18n="eyebrow">Embedding models · RAG</p>
+          <h1 id="page-title" data-i18n="title">RAG Model Field Guide</h1>
+          <p class="lede" data-i18n="subtitle">Loading…</p>
+          <nav class="site-inpage-nav" id="inpage-nav" aria-label="Sections" hidden>
+            <a class="inpage-link" href="#rag-embeddings" data-i18n="navRagRag">RAG &amp; embeddings</a>
+            <span class="inpage-sep" aria-hidden="true">·</span>
+            <a class="inpage-link" href="#agent-guide" data-i18n="navRagAgent">Agent frameworks</a>
+          </nav>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="theme-btn" id="theme-toggle" aria-label="Theme">
+            <span class="theme-btn__icon" aria-hidden="true">☾</span>
+          </button>
+          <div class="lang-toggle" role="group" aria-label="Language">
+            <button type="button" class="lang-btn is-active" data-lang="en" aria-pressed="true">EN</button>
+            <button type="button" class="lang-btn" data-lang="zh" aria-pressed="false">繁中</button>
+            <button type="button" class="lang-btn" data-lang="zh_hans" aria-pressed="false">简中</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="main" tabindex="-1">
+      <div id="rag-embeddings" class="content-region">
+      <section class="panel decision-panel" aria-labelledby="decision-heading">
+        <h2 id="decision-heading" data-i18n="decisionTitle">If your corpus is…</h2>
+        <ol class="decision-list" id="recommendation-list" hidden></ol>
+        <p class="muted" id="recommendation-fallback" hidden>—</p>
+      </section>
+
+      <section class="panel controls-panel" aria-labelledby="filter-heading">
+        <h2 id="filter-heading" class="visually-hidden">Filters</h2>
+        <div class="controls-row">
+          <label for="search-input" class="visually-hidden" data-i18n="searchLabel">Search</label>
+          <input
+            type="search"
+            id="search-input"
+            class="search-input"
+            data-i18n-placeholder="searchPlaceholder"
+            placeholder="Search…"
+            autocomplete="off"
+          />
+        </div>
+        <p class="filter-label" data-i18n="filterLabel">Filter by use case</p>
+        <div class="filter-chips" id="filter-chips" role="toolbar" aria-label="Use case filters"></div>
+      </section>
+
+      <section class="model-grid" id="model-grid" aria-live="polite">
+        <p class="empty-state" id="empty-state" hidden>No models match.</p>
+      </section>
+
+      <section class="panel public-examples" aria-labelledby="public-examples-heading">
+        <h2 id="public-examples-heading" data-i18n="publicExamplesTitle">Public Example Sources</h2>
+        <p class="muted" id="public-examples-note">
+          Public or network-accessible sources for RAG demos. Check licenses before copying content.
+        </p>
+        <div class="example-grid" id="public-examples-grid"></div>
+      </section>
+
+      <section class="panel methodology" aria-labelledby="method-heading">
+        <h2 id="method-heading" data-i18n="methodology">Methodology</h2>
+        <p data-i18n="methodologyBody">—</p>
+        <h3 class="h3" data-i18n="testingTitle">Practical testing plan</h3>
+        <ol class="testing-list" id="testing-list"></ol>
+        <p class="muted" id="data-updated" aria-live="polite"></p>
+      </section>
+
+      <section class="panel sources" aria-labelledby="sources-heading">
+        <h2 id="sources-heading">Sources &amp; reference</h2>
+        <ul class="source-links">
+          <li>
+            <a href="OPENROUTER_EMBEDDING_MODELS.md" data-i18n="linkMd">Long-form OpenRouter notes (Markdown)</a>
+            <span class="muted" data-i18n="linkMdNote"></span>
+          </li>
+          <li>
+            <a href="https://openrouter.ai/docs/api/reference/embeddings" rel="noopener noreferrer"
+              >OpenRouter Embeddings API</a
+            >
+          </li>
+          <li>
+            <a href="https://openrouter.ai/collections/embedding-models" rel="noopener noreferrer"
+              >Text embedding models collection</a
+            >
+          </li>
+        </ul>
+      </section>
+      </div>
+
+      <section
+        class="agent-guide-wrap"
+        id="agent-guide"
+        aria-label="AI agent framework guide"
+        hidden
+      >
+        <div class="agent-guide-header panel">
+          <p class="eyebrow" id="agent-guide-eyebrow">—</p>
+          <h2 class="agent-guide-title" id="agent-guide-title">—</h2>
+          <p class="lede" id="agent-guide-lede">—</p>
+        </div>
+        <div id="agent-guide-body"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <p class="footer-note" data-i18n="footer">Static data in <code>data/models.json</code>. No runtime API calls in the browser.</p>
+    </footer>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

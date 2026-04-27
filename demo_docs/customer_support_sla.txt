@@ -1,0 +1,13 @@
+Customer Support SLA
+
+Priority 1 issues are service outages or severe production failures affecting multiple customers.
+Priority 1 first response target is 15 minutes, twenty-four hours a day.
+
+Priority 2 issues are major feature failures with a workaround unavailable.
+Priority 2 first response target is 1 business hour.
+
+Priority 3 issues are normal defects or product questions.
+Priority 3 first response target is 1 business day.
+
+Support must post status updates every 30 minutes for active Priority 1 incidents.
+Engineering leadership must be paged immediately for all Priority 1 incidents.

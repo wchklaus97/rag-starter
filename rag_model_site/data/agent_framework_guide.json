@@ -1,0 +1,463 @@
+{
+  "version": 1,
+  "ui": {
+    "en": {
+      "sectionEyebrow": "Agents · selection",
+      "sectionTitle": "AI agent framework field guide",
+      "sectionLede": "The same site that compares embedding models: here is a practical map of mainstream agent stacks—protocols, patterns, and a five-question chooser. Educational summary; verify licenses and roadmaps for production.",
+      "navRag": "RAG & embeddings",
+      "navAgent": "Agent frameworks",
+      "foundationsTitle": "Three ideas reshaping the stack",
+      "paradigmsTitle": "Five architectural patterns",
+      "tableTitle": "Reference snapshot",
+      "wizardTitle": "Five-step chooser",
+      "wizardStep": "Step",
+      "wizardResultTitle": "Suggested starting points",
+      "wizardResultHint": "Use as a first filter—prototype, then validate for security, cost, and ops.",
+      "wizardReset": "Reset",
+      "trendsTitle": "Trends (high level)",
+      "adviceTitle": "Who you are"
+    },
+    "zh": {
+      "sectionEyebrow": "智能體 · 選型",
+      "sectionTitle": "AI Agent 框架實戰導航",
+      "sectionLede": "與本站的嵌入模型導航並列：整理主流智能體技術棧的協定、型態與五步選型。內容為教學摘要，正式導入前請再核對各專案授權與路線圖。",
+      "navRag": "RAG 與嵌入模型",
+      "navAgent": "Agent 框架",
+      "foundationsTitle": "正在重塑生態的三個基礎概念",
+      "paradigmsTitle": "五種常見架構型態",
+      "tableTitle": "對照一覽",
+      "wizardTitle": "五步選型",
+      "wizardStep": "第",
+      "wizardResultTitle": "建議優先评估",
+      "wizardResultHint": "作為起點篩選，仍需依安全、成本與營運驗證。",
+      "wizardReset": "重設",
+      "trendsTitle": "行業趨向（精簡）",
+      "adviceTitle": "給不同階段的你"
+    },
+    "zh_hans": {
+      "sectionEyebrow": "智能体 · 选型",
+      "sectionTitle": "AI Agent 框架实战导航",
+      "sectionLede": "与站的嵌入模型导航并列：梳理主流智能体技术栈的协议、形态与五步选型。内容为教学摘要，正式导入前请再核对各项目授权与路线图。",
+      "navRag": "RAG 与嵌入模型",
+      "navAgent": "Agent 框架",
+      "foundationsTitle": "正在重塑生态的三个基础概念",
+      "paradigmsTitle": "五种常见架构形态",
+      "tableTitle": "对照一览",
+      "wizardTitle": "五步选型",
+      "wizardStep": "第",
+      "wizardResultTitle": "建议优先评估",
+      "wizardResultHint": "作为起点筛选，仍需按安全、成本与运维验证。",
+      "wizardReset": "重置",
+      "trendsTitle": "行业趋向（精简）",
+      "adviceTitle": "给不同阶段的你"
+    }
+  },
+  "foundations": {
+    "en": [
+      {
+        "id": "mcp",
+        "name": "MCP (Model Context Protocol)",
+        "body": "A standard way to expose tools, resources, and prompts to models—think of it as a common \"USB port\" for agent tooling. When both your framework and a connector support MCP, you can often reuse the same tool integration across agents instead of rewriting per stack."
+      },
+      {
+        "id": "a2a",
+        "name": "A2A / inter-agent protocols",
+        "body": "As agents need to hand off work across teams and products, cross-runtime protocols matter. Large vendors are converging on agent-to-agent and workflow bridges; support varies, so for multi-org or multi-tenant handoffs, check that your target platforms expose the integrations you need."
+      },
+      {
+        "id": "context",
+        "name": "Context engineering",
+        "body": "Beyond clever single prompts, production systems must manage what enters the model window: memory, compression, RAG, filtering, and tool selection. Frameworks differ in how they help you trim noise and control long-running state."
+      }
+    ],
+    "zh": [
+      {
+        "id": "mcp",
+        "name": "MCP（Model Context Protocol）",
+        "body": "以標準化方式讓模型使用工具、資源與提示——可類比成智能體工具層的「通用接口」。當框架與連接器都支援 MCP 時，同一套工具整合往往可跨專案重用，減少每換一套框架就重寫工具的成本。"
+      },
+      {
+        "id": "a2a",
+        "name": "A2A / 多智能體協作協定",
+        "body": "當多個要跨團隊、跨產品交辦工作時，執行環境之間的互通協定變得重要。大廠在推動智能體對智能體、工作流銜接等方向；實作支援度不一。若牽涉多組織、多租戶交接，導入前應查證目標平台是否具備你需要的串接面。"
+      },
+      {
+        "id": "context",
+        "name": "上下文工程（Context engineering）",
+        "body": "僅依賴單次精巧提示在生產上往往不夠；要系統性管理「進入模型視窗的內容」：記憶、壓縮、RAG、雜訊過濾與工具挑選。各框架在長流程狀態與裁剪策略上的能力差異，正是選型要看的深層面。"
+      }
+    ],
+    "zh_hans": [
+      {
+        "id": "mcp",
+        "name": "MCP（Model Context Protocol）",
+        "body": "以标准化方式让模型使用工具、资源与提示——可类比成智能体工具层的“通用接口”。当框架与连接器都支持 MCP 时，同一套工具整合常可跨项目复用，减少每换一套框架就重写工具的成本。"
+      },
+      {
+        "id": "a2a",
+        "name": "A2A / 多智能体协作协议",
+        "body": "当多个智能体要跨团队、跨产品交接任务时，运行时之间的互操作性变得重要。各大厂在推动智能体对智能体、工作流衔接等；实现支持度不一。若涉及多组织、多租户交接，应事先查证目标平台是否提供所需连接能力。"
+      },
+      {
+        "id": "context",
+        "name": "上下文工程（Context engineering）",
+        "body": "仅依赖单次精巧提示在量产上往往不够；要系统管理进入模型窗口的内容：记忆、压缩、RAG、噪声过滤与工具选择。各框架在长程状态与裁剪策略上的差异，是选型的关键深层维度。"
+      }
+    ]
+  },
+  "paradigms": {
+    "en": [
+      {
+        "id": "graph",
+        "title": "Graph / explicit state machine",
+        "exemplar": "e.g. LangGraph-style: nodes, edges, durable state",
+        "strengths": "Fine control, pause/resume, inspection & replay—strong for regulated or long workflows.",
+        "caveats": "Steeper learning curve; you design the graph explicitly."
+      },
+      {
+        "id": "role",
+        "title": "Role- & crew-driven",
+        "exemplar": "e.g. CrewAI-style: natural-language roles, teams",
+        "strengths": "Very fast to prototype multi-agent “rooms”; great for experimentation.",
+        "caveats": "Less low-level control; watch token use when agents “chat” a lot."
+      },
+      {
+        "id": "data",
+        "title": "Data- & event-centric",
+        "exemplar": "e.g. LlamaIndex-style ingestion; event-driven enterprise stacks",
+        "strengths": "RAG- and document-heavy work; some stacks excel at connectors & parsing.",
+        "caveats": "Model choice is not enough—data quality and indexing still dominate outcomes."
+      },
+      {
+        "id": "sdk",
+        "title": "SDK-first / typed orchestration",
+        "exemplar": "e.g. OpenAI Agents SDK, PydanticAI-style",
+        "strengths": "Minimal code paths, type-safe structures, handoffs between agents.",
+        "caveats": "Complex long-lived orchestration may need another layer."
+      },
+      {
+        "id": "lowcode",
+        "title": "Low-code / platform",
+        "exemplar": "e.g. Dify & similar workflow UIs",
+        "strengths": "Non-developers can ship; fastest path for org-wide citizen builders.",
+        "caveats": "Heaviest custom logic may still require code outside the UI."
+      }
+    ],
+    "zh": [
+      {
+        "id": "graph",
+        "title": "圖／顯式狀態機",
+        "exemplar": "如 LangGraph 思路：節點、邊、可持久化狀態",
+        "strengths": "控制精細、可暫停／恢復、可檢查與重播——長流程、法遵情境較佔優。",
+        "caveats": "學習曲線陡；圖要你自己設計。"
+      },
+      {
+        "id": "role",
+        "title": "角色／團隊驅動",
+        "exemplar": "如 CrewAI 思路：以自然語言定義角色與團隊",
+        "strengths": "多智能體原型極快；做實驗、驗證點子很順。",
+        "caveats": "底層控制力較少；多輪互動要留意 token 與成本。"
+      },
+      {
+        "id": "data",
+        "title": "資料與事件驅動",
+        "exemplar": "如 LlamaIndex 重資料攝入；或事件驅動的企業式編排",
+        "strengths": "RAG、文件量大的場景；連接器與解析常是核心。",
+        "caveats": "僅挑模型不夠，資料品質與索引仍主導成敗。"
+      },
+      {
+        "id": "sdk",
+        "title": "SDK 型／型別化編排",
+        "exemplar": "如 OpenAI Agents SDK、PydanticAI 一類",
+        "strengths": "路徑短、型別與驗證、智能體之間交接敘事清楚。",
+        "caveats": "超長、超複雜流程可能仍要額外編排層。"
+      },
+      {
+        "id": "lowcode",
+        "title": "低代碼／平台型",
+        "exemplar": "如 Dify 等以視覺化工作流為主",
+        "strengths": "非工程師也能上線；組織內推廣快。",
+        "caveats": "極度客製的底層邏輯仍常要回到程式碼。"
+      }
+    ],
+    "zh_hans": [
+      {
+        "id": "graph",
+        "title": "图／显式状态机",
+        "exemplar": "如 LangGraph：节点、边、可持久化状态",
+        "strengths": "控制细、可暂停/恢复、可检查与重放——长流程、合规向场景占优。",
+        "caveats": "学习曲线陡；图需自行设计。"
+      },
+      {
+        "id": "role",
+        "title": "角色／团队驱动",
+        "exemplar": "如 CrewAI：自然语言角色与团队",
+        "strengths": "多智能体原型很快；做实验、验证想法顺。",
+        "caveats": "底层控制较少；多轮互动注意 token 与成本。"
+      },
+      {
+        "id": "data",
+        "title": "数据与事件驱动",
+        "exemplar": "如 LlamaIndex 重数据摄入；或事件式企业编排",
+        "strengths": "RAG、重文档与连接器/解析的场合。",
+        "caveats": "只选模型不够，数据与索引质量仍主导效果。"
+      },
+      {
+        "id": "sdk",
+        "title": "SDK 型／类型化编排",
+        "exemplar": "如 OpenAI Agents SDK、PydanticAI 等",
+        "strengths": "路径短、类型与校验、智能体之间交接清楚。",
+        "caveats": "超长、超复杂流程往往还要再加编排层。"
+      },
+      {
+        "id": "lowcode",
+        "title": "低代码／平台型",
+        "exemplar": "如 Dify 等可视化工作流",
+        "strengths": "非研发也能上线；组织内推广快。",
+        "caveats": "极深定制常仍要回到代码。"
+      }
+    ]
+  },
+  "frameworkRows": {
+    "en": [
+      { "name": "LangGraph (ecosystem)", "pattern": "Graph / state", "for": "Long, inspectable, stateful workflows", "note": "Often paired with LangChain pieces" },
+      { "name": "CrewAI", "pattern": "Role crews", "for": "Fast multi-agent role play & demos", "note": "Watch token burn on chatter" },
+      { "name": "LlamaIndex", "pattern": "Data + RAG", "for": "Ingestion, indexing, RAG-first apps", "note": "Advanced parsing/conn. may be paid tiers" },
+      { "name": "Dify", "pattern": "Low-code platform", "for": "Org-wide workflow publishing", "note": "Enterprise features often licensed" },
+      { "name": "OpenAI Agents SDK", "pattern": "SDK", "for": "Minimal code, handoffs, voice in ecosystem", "note": "Tied to OpenAI surface area" },
+      { "name": "PydanticAI", "pattern": "SDK / types", "for": "Structured outputs & many model backends", "note": "Popular for Python services" },
+      { "name": "Microsoft Agent Framework", "pattern": "Enterprise + .NET", "for": "Microsoft/Azure shops, unified agent story", "note": "Check MCP / interop in your version" },
+      { "name": "Google ADK", "pattern": "Multi-language SDK", "for": "GCP-affine teams, Gemini-first", "note": "Maturity and off-cloud flexibility vary" },
+      { "name": "AgentScope (Alibaba)", "pattern": "Java / Python, local-friendly", "for": "Domestic model support, on-prem, fine-tune hooks", "note": "Evaluate for CN compliance stacks" }
+    ],
+    "zh": [
+      { "name": "LangGraph（生態）", "pattern": "圖／狀態", "for": "長流程、可檢查、有狀態", "note": "常與 LangChain 元件併用" },
+      { "name": "CrewAI", "pattern": "角色團隊", "for": "多智能體角色原型、Demo", "note": "多輪聊天留意 token" },
+      { "name": "LlamaIndex", "pattern": "資料＋RAG", "for": "攝入、索引、RAG 優先", "note": "高級解析/連接或為付費層" },
+      { "name": "Dify", "pattern": "低代碼平台", "for": "組織內廣推工作流", "note": "企業功能多需授權" },
+      { "name": "OpenAI Agents SDK", "pattern": "SDK", "for": "少碼、交接、生態內語音等", "note": "綁定 OpenAI 產品面" },
+      { "name": "PydanticAI", "pattern": "SDK／型別", "for": "結構化輸出、多模型後端", "note": "Python 服務常見" },
+      { "name": "Microsoft Agent Framework", "pattern": "企業／.NET", "for": "微軟／Azure 技術棧", "note": "查詢版本內 MCP／互通能力" },
+      { "name": "Google ADK", "pattern": "多語言 SDK", "for": "GCP 導向、Gemini 優先", "note": "成熟度與脫雲靈活度因版而異" },
+      { "name": "阿里 AgentScope", "pattern": "Java／Python 等", "for": "國內模型、地端、可微調", "note": "合規與內網需求可評估" }
+    ],
+    "zh_hans": [
+      { "name": "LangGraph（生态）", "pattern": "图／状态", "for": "长程、可检查、有状态", "note": "常与 LangChain 组合" },
+      { "name": "CrewAI", "pattern": "角色团队", "for": "多智能体角色原型、Demo", "note": "多轮对话注意 token" },
+      { "name": "LlamaIndex", "pattern": "数据＋RAG", "for": "摄入、索引、RAG 优先", "note": "高级解析/连接或属付费" },
+      { "name": "Dify", "pattern": "低代码平台", "for": "组织内推广工作流", "note": "企业功能多需授权" },
+      { "name": "OpenAI Agents SDK", "pattern": "SDK", "for": "少码、交接、生态内能力", "note": "绑定 OpenAI 面" },
+      { "name": "PydanticAI", "pattern": "SDK／类型", "for": "结构化输出、多模型后端", "note": "Python 服务侧常见" },
+      { "name": "Microsoft Agent Framework", "pattern": "企业／.NET", "for": "微软／Azure 技术栈", "note": "查版本内 MCP／互通" },
+      { "name": "Google ADK", "pattern": "多语言 SDK", "for": "GCP 导向、Gemini 优先", "note": "成熟度与离云灵活度因版而异" },
+      { "name": "阿里 AgentScope", "pattern": "Java／Python 等", "for": "国内模型、地端、微调", "note": "合规与内网需求可评估" }
+    ]
+  },
+  "trends": {
+    "en": [
+      "Consolidation: fewer mega-frameworks, deeper stacks.",
+      "Composable engines: e.g. heavy document parsing or workflow as swappable modules.",
+      "Multimodal defaults: voice/video hooks becoming baseline for agent products.",
+      "MCP-style tooling and A2A-style handoffs: plan interop for large orgs."
+    ],
+    "zh": [
+      "整併：大型框架變少、堆疊變深。",
+      "可組裝：例如重文件解析或工作流以模組化接入。",
+      "多模態成標配：語音/視訊介面在產品層更常見。",
+      "MCP 類工具與智能體交接：在大型組織要預先設計互通。"
+    ],
+    "zh_hans": [
+      "整合：大型框架变少、堆栈变深。",
+      "可组装：如重文档解析或工作流以模块接入。",
+      "多模态成标配：语音/视频在智能体产品侧更常见。",
+      "MCP 式工具与 A2A 式交接：大组织要预先设计互通。"
+    ]
+  },
+  "advice": {
+    "en": [
+      { "audience": "Solo / learning", "text": "Start with a small SDK (e.g. OpenAI Agents or PydanticAI) to learn tool calls and handoffs, then only adopt a state machine (LangGraph-style) when control becomes the bottleneck." },
+      { "audience": "Startup", "text": "Ship a CrewAI-style demo fast to test the idea; if traction appears, plan a migration to a graph/stateful stack for production scale." },
+      { "audience": "Enterprise", "text": "Align with cloud strategy, require MCP (or your org’s interop) on the RFP, and pair a low-code layer (Dify) with a code-first core (e.g. LangGraph) if both citizen developers and SREs must coexist." }
+    ],
+    "zh": [
+      { "audience": "獨立開發／學習者", "text": "先用小型 SDK（如 OpenAI Agents 或 PydanticAI）把工具呼叫與交接跑通，再當控制面成痛點時導入狀態機／圖編排。" },
+      { "audience": "新創團隊", "text": "用角色型框架快速做 Demo 驗證市場；有起色後，為正式上線與可維運性規劃遷到圖／有狀態棧。" },
+      { "audience": "大型企業", "text": "與雲戰略對齊；在採購/標案中要求 MCP 等互通；可「低代碼平台＋圖編排核心」雙層，兼顧公民開發與 SRE。" }
+    ],
+    "zh_hans": [
+      { "audience": "独立开发／学习者", "text": "先用小型 SDK（如 OpenAI Agents 或 PydanticAI）跑通工具调用与交接，控制面成瓶颈再上图/状态机编排。" },
+      { "audience": "创业团队", "text": "用角色型框架快速做 Demo 验证；有起色后再为量产与可运维规划迁移到图/有状态栈。" },
+      { "audience": "大型企业", "text": "与云战略对齐；采购/标书要求 MCP 等互通；可「低代码平台＋图编排核心」兼顾公民研发与 SRE。" }
+    ]
+  },
+  "wizard": {
+    "steps": {
+      "en": [
+        {
+          "id": "stack",
+          "title": "Your platform DNA",
+          "options": [
+            { "id": "dotnet", "label": ".NET / Microsoft shop", "weight": { "Microsoft Agent Framework": 3, "Dify": 1 } },
+            { "id": "java", "label": "Java / JVM heavy", "weight": { "AgentScope (Alibaba)": 2, "Google ADK": 2 } },
+            { "id": "py", "label": "Python-first team", "weight": { "LangGraph (ecosystem)": 2, "CrewAI": 2, "LlamaIndex": 2, "PydanticAI": 2, "Dify": 1 } },
+            { "id": "js", "label": "JS/TS or front-end led", "weight": { "OpenAI Agents SDK": 2, "Google ADK": 1 } },
+            { "id": "any", "label": "Polyglot / no strong bias", "weight": { "PydanticAI": 1, "Dify": 1, "Google ADK": 1, "Microsoft Agent Framework": 1 } }
+          ]
+        },
+        {
+          "id": "scenario",
+          "title": "Core workload",
+          "options": [
+            { "id": "rag", "label": "Huge docs, RAG, connectors", "weight": { "LlamaIndex": 3, "Dify": 1 } },
+            { "id": "crew", "label": "Many collaborating agents (roles)", "weight": { "CrewAI": 3, "Dify": 1 } },
+            { "id": "state", "label": "Long, pausable, auditable workflow", "weight": { "LangGraph (ecosystem)": 3, "Microsoft Agent Framework": 2 } },
+            { "id": "mvp", "label": "Need a demo or MVP in days", "weight": { "OpenAI Agents SDK": 2, "CrewAI": 2, "Dify": 2 } },
+            { "id": "lowcode", "label": "Ops / non-dev must ship flows", "weight": { "Dify": 3 } },
+            { "id": "cn", "label": "On-prem China / domestic models", "weight": { "AgentScope (Alibaba)": 3, "Dify": 1 } }
+          ]
+        },
+        {
+          "id": "cloud",
+          "title": "Primary deployment bias",
+          "options": [
+            { "id": "azure", "label": "Azure / Microsoft cloud", "weight": { "Microsoft Agent Framework": 3 } },
+            { "id": "gcp", "label": "Google Cloud", "weight": { "Google ADK": 3, "LlamaIndex": 1 } },
+            { "id": "alibaba", "label": "Alibaba Cloud", "weight": { "AgentScope (Alibaba)": 2, "Dify": 1 } },
+            { "id": "self", "label": "Self-host / on-prem", "weight": { "Dify": 2, "AgentScope (Alibaba)": 1, "LangGraph (ecosystem)": 1 } },
+            { "id": "agnostic", "label": "No cloud preference", "weight": { "PydanticAI": 1, "CrewAI": 1, "LangGraph (ecosystem)": 1 } }
+          ]
+        },
+        {
+          "id": "model",
+          "title": "Model provider anchor",
+          "options": [
+            { "id": "openai", "label": "OpenAI API stack", "weight": { "OpenAI Agents SDK": 3, "PydanticAI": 1 } },
+            { "id": "gemini", "label": "Gemini / Google models", "weight": { "Google ADK": 3 } },
+            { "id": "cn_models", "label": "Domestic / CN models (e.g. Qwen, Doubao, …)", "weight": { "AgentScope (Alibaba)": 2, "Dify": 1 } },
+            { "id": "agnostic", "label": "Model-agnostic (swap cheap/small often)", "weight": { "PydanticAI": 3, "LangGraph (ecosystem)": 1 } }
+          ]
+        },
+        {
+          "id": "cost",
+          "title": "Top priority",
+          "options": [
+            { "id": "control", "label": "Maximum control & token efficiency", "weight": { "LangGraph (ecosystem)": 2, "PydanticAI": 2, "OpenAI Agents SDK": 0 } },
+            { "id": "speed", "label": "Fastest time to demo", "weight": { "CrewAI": 2, "Dify": 2, "OpenAI Agents SDK": 2 } },
+            { "id": "hidden", "label": "Minimize platform / hidden cost surprises", "weight": { "PydanticAI": 2, "LangGraph (ecosystem)": 1, "OpenAI Agents SDK": 0 } }
+          ]
+        }
+      ],
+      "zh": [
+        {
+          "id": "stack",
+          "title": "團隊技術基因",
+          "options": [
+            { "id": "dotnet", "label": "以 .NET／微軟生態為主", "weight": { "Microsoft Agent Framework": 3, "Dify": 1 } },
+            { "id": "java", "label": "Java / JVM 為主", "weight": { "AgentScope (Alibaba)": 2, "Google ADK": 2 } },
+            { "id": "py", "label": "以 Python 為主", "weight": { "LangGraph (ecosystem)": 2, "CrewAI": 2, "LlamaIndex": 2, "PydanticAI": 2, "Dify": 1 } },
+            { "id": "js", "label": "JS/TS 或前端主導", "weight": { "OpenAI Agents SDK": 2, "Google ADK": 1 } },
+            { "id": "any", "label": "多語言／無明顯偏向", "weight": { "PydanticAI": 1, "Dify": 1, "Google ADK": 1, "Microsoft Agent Framework": 1 } }
+          ]
+        },
+        {
+          "id": "scenario",
+          "title": "主要業務負載",
+          "options": [
+            { "id": "rag", "label": "大量文件、RAG、連接器", "weight": { "LlamaIndex": 3, "Dify": 1 } },
+            { "id": "crew", "label": "多智能體角色協作", "weight": { "CrewAI": 3, "Dify": 1 } },
+            { "id": "state", "label": "長程、可暫停、可稽核的工作流", "weight": { "LangGraph (ecosystem)": 3, "Microsoft Agent Framework": 2 } },
+            { "id": "mvp", "label": "幾天內要 Demo / MVP", "weight": { "OpenAI Agents SDK": 2, "CrewAI": 2, "Dify": 2 } },
+            { "id": "lowcode", "label": "營運／非研發要自行上架流程", "weight": { "Dify": 3 } },
+            { "id": "cn", "label": "地端／國內合規、國產模型", "weight": { "AgentScope (Alibaba)": 3, "Dify": 1 } }
+          ]
+        },
+        {
+          "id": "cloud",
+          "title": "部署雲傾向",
+          "options": [
+            { "id": "azure", "label": "Azure / 微軟雲", "weight": { "Microsoft Agent Framework": 3 } },
+            { "id": "gcp", "label": "Google Cloud", "weight": { "Google ADK": 3, "LlamaIndex": 1 } },
+            { "id": "alibaba", "label": "阿里雲", "weight": { "AgentScope (Alibaba)": 2, "Dify": 1 } },
+            { "id": "self", "label": "自架／內網地端", "weight": { "Dify": 2, "AgentScope (Alibaba)": 1, "LangGraph (ecosystem)": 1 } },
+            { "id": "agnostic", "label": "沒有雲偏好", "weight": { "PydanticAI": 1, "CrewAI": 1, "LangGraph (ecosystem)": 1 } }
+          ]
+        },
+        {
+          "id": "model",
+          "title": "模型供應商主軸",
+          "options": [
+            { "id": "openai", "label": "OpenAI API 生態", "weight": { "OpenAI Agents SDK": 3, "PydanticAI": 1 } },
+            { "id": "gemini", "label": "Gemini / Google 模型", "weight": { "Google ADK": 3 } },
+            { "id": "cn_models", "label": "國產模型（如通義、豆包等）", "weight": { "AgentScope (Alibaba)": 2, "Dify": 1 } },
+            { "id": "agnostic", "label": "儘量不綁定、常換小模型", "weight": { "PydanticAI": 3, "LangGraph (ecosystem)": 1 } }
+          ]
+        },
+        {
+          "id": "cost",
+          "title": "當下最在意的權衡",
+          "options": [
+            { "id": "control", "label": "控制權與 token 效率", "weight": { "LangGraph (ecosystem)": 2, "PydanticAI": 2 } },
+            { "id": "speed", "label": "最快做出形", "weight": { "CrewAI": 2, "Dify": 2, "OpenAI Agents SDK": 2 } },
+            { "id": "hidden", "label": "盡量避免平台隱性成本", "weight": { "PydanticAI": 2, "LangGraph (ecosystem)": 1 } }
+          ]
+        }
+      ],
+      "zh_hans": [
+        {
+          "id": "stack",
+          "title": "团队技术基因",
+          "options": [
+            { "id": "dotnet", "label": "以 .NET / 微软生态为主", "weight": { "Microsoft Agent Framework": 3, "Dify": 1 } },
+            { "id": "java", "label": "Java / JVM 为主", "weight": { "AgentScope (Alibaba)": 2, "Google ADK": 2 } },
+            { "id": "py", "label": "以 Python 为主", "weight": { "LangGraph (ecosystem)": 2, "CrewAI": 2, "LlamaIndex": 2, "PydanticAI": 2, "Dify": 1 } },
+            { "id": "js", "label": "JS/TS 或前端主导", "weight": { "OpenAI Agents SDK": 2, "Google ADK": 1 } },
+            { "id": "any", "label": "多语言 / 无明显偏向", "weight": { "PydanticAI": 1, "Dify": 1, "Google ADK": 1, "Microsoft Agent Framework": 1 } }
+          ]
+        },
+        {
+          "id": "scenario",
+          "title": "主要业务负载",
+          "options": [
+            { "id": "rag", "label": "大量文档、RAG、连接器", "weight": { "LlamaIndex": 3, "Dify": 1 } },
+            { "id": "crew", "label": "多智能体角色协作", "weight": { "CrewAI": 3, "Dify": 1 } },
+            { "id": "state", "label": "长程、可暂停、可审计的工作流", "weight": { "LangGraph (ecosystem)": 3, "Microsoft Agent Framework": 2 } },
+            { "id": "mvp", "label": "几天内要 Demo / MVP", "weight": { "OpenAI Agents SDK": 2, "CrewAI": 2, "Dify": 2 } },
+            { "id": "lowcode", "label": "运营/非研发要自上架流程", "weight": { "Dify": 3 } },
+            { "id": "cn", "label": "地端/国内合规、国产模型", "weight": { "AgentScope (Alibaba)": 3, "Dify": 1 } }
+          ]
+        },
+        {
+          "id": "cloud",
+          "title": "部署云倾向",
+          "options": [
+            { "id": "azure", "label": "Azure / 微软云", "weight": { "Microsoft Agent Framework": 3 } },
+            { "id": "gcp", "label": "Google Cloud", "weight": { "Google ADK": 3, "LlamaIndex": 1 } },
+            { "id": "alibaba", "label": "阿里云", "weight": { "AgentScope (Alibaba)": 2, "Dify": 1 } },
+            { "id": "self", "label": "自建/内网地端", "weight": { "Dify": 2, "AgentScope (Alibaba)": 1, "LangGraph (ecosystem)": 1 } },
+            { "id": "agnostic", "label": "没有云偏好", "weight": { "PydanticAI": 1, "CrewAI": 1, "LangGraph (ecosystem)": 1 } }
+          ]
+        },
+        {
+          "id": "model",
+          "title": "模型供应业主轴",
+          "options": [
+            { "id": "openai", "label": "OpenAI API 生态", "weight": { "OpenAI Agents SDK": 3, "PydanticAI": 1 } },
+            { "id": "gemini", "label": "Gemini / Google 模型", "weight": { "Google ADK": 3 } },
+            { "id": "cn_models", "label": "国产模型", "weight": { "AgentScope (Alibaba)": 2, "Dify": 1 } },
+            { "id": "agnostic", "label": "尽量绑定少、常换小模型", "weight": { "PydanticAI": 3, "LangGraph (ecosystem)": 1 } }
+          ]
+        },
+        {
+          "id": "cost",
+          "title": "最在意的取舍",
+          "options": [
+            { "id": "control", "label": "控制与 token 效率", "weight": { "LangGraph (ecosystem)": 2, "PydanticAI": 2 } },
+            { "id": "speed", "label": "最快出形", "weight": { "CrewAI": 2, "Dify": 2, "OpenAI Agents SDK": 2 } },
+            { "id": "hidden", "label": "少踩平台隐性成本", "weight": { "PydanticAI": 2, "LangGraph (ecosystem)": 1 } }
+          ]
+        }
+      ]
+    }
+  }
+}

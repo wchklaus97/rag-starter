@@ -1,0 +1,238 @@
+/*
+  RAG Model Field Guide — design tokens (Design Tokens Community Group style)
+
+  Layer 1 — Primitive:   raw values (oklch for smooth ramps + theme)
+  Layer 2 — Semantic:    purpose (background, text, border, accent)
+  Layer 3 — Component:   panels, cards, controls, code, page chrome
+
+  Usage: components use semantic or component variables only. No raw hex in styles.css.
+*/
+
+:root {
+  /* ——— Primitive: color (light basis) ——— */
+  --p-color-paper-0: oklch(0.99 0.006 95);
+  --p-color-paper-1: oklch(0.98 0.008 95);
+  --p-color-paper-2: oklch(0.96 0.012 95);
+  --p-color-ink-950: oklch(0.19 0.04 270);
+  --p-color-ink-800: oklch(0.32 0.04 270);
+  --p-color-ink-600: oklch(0.46 0.03 270);
+  --p-color-ink-500: oklch(0.55 0.02 270);
+  --p-color-white: oklch(1 0 0);
+  /* Accent: indigo-violet, distinct from default “AI blue” */
+  --p-color-violet-600: oklch(0.5 0.19 285);
+  --p-color-violet-500: oklch(0.55 0.2 285);
+  --p-color-violet-400: oklch(0.64 0.16 285);
+  --p-color-rose-500: oklch(0.6 0.2 15);
+
+  /* ——— Primitive: spacing (4px base) ——— */
+  --p-space-0: 0;
+  --p-space-1: 0.25rem;
+  --p-space-2: 0.5rem;
+  --p-space-3: 0.75rem;
+  --p-space-4: 1rem;
+  --p-space-5: 1.25rem;
+  --p-space-6: 1.5rem;
+  --p-space-8: 2rem;
+  --p-space-10: 2.5rem;
+  --p-space-12: 3rem;
+  --p-space-16: 4rem;
+  --p-space-20: 5rem;
+  --p-space-24: 6rem;
+
+  /* ——— Primitive: radius ——— */
+  --p-r-sm: 0.2rem;
+  --p-r-md: 0.4rem;
+  --p-r-lg: 0.55rem;
+  --p-r-xl: 0.75rem;
+  --p-r-pill: 999px;
+
+  /* ——— Primitive: typography (stack names; faces loaded in index.html) ——— */
+  --p-font-display: "Fraunces", "Literata", Georgia, "Times New Roman", serif;
+  --p-font-body: "Source Sans 3", "Atkinson Hyperlegible", system-ui, sans-serif;
+  --p-font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+  --p-line-body: 1.58;
+  --p-line-heading: 1.15;
+  --p-line-tight: 1.2;
+  --p-max-read: 70ch;
+  --p-tracking-section: 0.06em;
+  --p-tracking-mono: 0.12em;
+
+  /* ——— Primitive: motion ——— */
+  --p-ease-out: cubic-bezier(0.2, 0.85, 0.2, 1);
+  --p-dur-1: 120ms;
+  --p-dur-2: 200ms;
+  --p-dur-3: 320ms;
+
+  /* Shadow strengths use semantic ink in the “compat” block below (after --s-color-ink exists). */
+}
+
+/* Light semantic defaults on :root (also used when [data-theme="light"]) */
+:root,
+[data-theme="light"] {
+  --s-color-paper: var(--p-color-paper-0);
+  --s-color-paper-subtle: var(--p-color-paper-1);
+  --s-color-elevated: var(--p-color-white);
+  --s-color-ink: var(--p-color-ink-950);
+  --s-color-ink-muted: var(--p-color-ink-600);
+  --s-color-ink-faint: var(--p-color-ink-500);
+  --s-color-border: color-mix(in oklch, var(--p-color-ink-800) 14%, var(--p-color-paper-0));
+  --s-color-border-strong: color-mix(in oklch, var(--p-color-ink-800) 24%, var(--p-color-paper-0));
+  --s-color-accent: var(--p-color-violet-600);
+  --s-color-accent-hover: color-mix(in oklch, var(--p-color-violet-600) 88%, var(--p-color-ink-950));
+  --s-color-accent-contrast: var(--p-color-white);
+  --s-color-accent-soft: color-mix(in oklch, var(--p-color-violet-500) 12%, var(--p-color-paper-0));
+  --s-color-link: var(--s-color-accent);
+  --s-color-link-hover: var(--p-color-ink-800);
+  --s-color-code-bg: color-mix(in oklch, var(--p-color-ink-800) 6%, var(--p-color-paper-0));
+  --s-color-tag-bg: color-mix(in oklch, var(--p-color-ink-800) 5%, var(--p-color-paper-1));
+  --s-color-focus-ring: var(--p-color-violet-500);
+  --s-color-page-grid: color-mix(in oklch, var(--s-color-border) 22%, transparent);
+  --s-color-header-scrim: color-mix(in oklch, var(--s-color-paper) 88%, transparent);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --p-color-paper-0: oklch(0.17 0.035 275);
+  --p-color-paper-1: oklch(0.2 0.035 275);
+  --p-color-paper-2: oklch(0.24 0.04 275);
+  --p-color-ink-950: oklch(0.96 0.02 95);
+  --p-color-ink-800: oklch(0.88 0.02 95);
+  --p-color-ink-600: oklch(0.7 0.02 250);
+  --p-color-ink-500: oklch(0.6 0.02 250);
+  --p-color-white: oklch(0.22 0.03 275);
+  --p-color-violet-600: oklch(0.72 0.16 285);
+  --p-color-violet-500: oklch(0.68 0.17 285);
+  --p-color-violet-400: oklch(0.78 0.12 285);
+
+  --s-color-paper: var(--p-color-paper-0);
+  --s-color-paper-subtle: var(--p-color-paper-1);
+  --s-color-elevated: var(--p-color-paper-2);
+  --s-color-ink: var(--p-color-ink-950);
+  --s-color-ink-muted: var(--p-color-ink-600);
+  --s-color-ink-faint: var(--p-color-ink-500);
+  --s-color-border: color-mix(in oklch, var(--p-color-ink-800) 22%, var(--p-color-paper-0));
+  --s-color-border-strong: color-mix(in oklch, var(--p-color-ink-800) 38%, var(--p-color-paper-0));
+  --s-color-accent: var(--p-color-violet-600);
+  --s-color-accent-hover: color-mix(in oklch, var(--p-color-violet-500) 92%, white);
+  --s-color-accent-contrast: oklch(0.12 0.04 275);
+  --s-color-accent-soft: color-mix(in oklch, var(--p-color-violet-500) 16%, var(--p-color-paper-0));
+  --s-color-link: var(--p-color-violet-400);
+  --s-color-link-hover: var(--p-color-ink-800);
+  --s-color-code-bg: color-mix(in oklch, var(--p-color-ink-950) 8%, var(--p-color-paper-1));
+  --s-color-tag-bg: color-mix(in oklch, var(--p-color-ink-800) 12%, var(--p-color-paper-1));
+  --s-color-focus-ring: var(--p-color-violet-400);
+  --s-color-page-grid: color-mix(in oklch, var(--s-color-border) 35%, transparent);
+  --s-color-header-scrim: color-mix(in oklch, var(--s-color-paper) 80%, transparent);
+  color-scheme: dark;
+}
+
+/* ——— Backward compatibility & semantic aliases used by styles.css ——— */
+:root,
+[data-theme="light"],
+[data-theme="dark"] {
+  /* Legacy names → semantic (single place to rename later) */
+  --color-bg: var(--s-color-paper);
+  --color-surface: var(--s-color-paper-subtle);
+  --color-surface-raised: var(--s-color-elevated);
+  --color-text: var(--s-color-ink);
+  --color-text-muted: var(--s-color-ink-muted);
+  --color-border: var(--s-color-border);
+  --color-accent: var(--s-color-accent);
+  --color-accent-soft: var(--s-color-accent-soft);
+  --color-link: var(--s-color-link);
+  --color-link-hover: var(--s-color-link-hover);
+  --color-code-bg: var(--s-color-code-bg);
+  --color-tag-bg: var(--s-color-tag-bg);
+  --primitive-white: var(--p-color-white);
+
+  --font-display: var(--p-font-display);
+  --font-body: var(--p-font-body);
+  --font-mono: var(--p-font-mono);
+  --line-body: var(--p-line-body);
+  --line-heading: var(--p-line-tight);
+  --measure-readable: var(--p-max-read);
+
+  --space-xs: var(--p-space-1);
+  --space-sm: var(--p-space-2);
+  --space-md: var(--p-space-3);
+  --space-lg: var(--p-space-5);
+  --space-xl: var(--p-space-8);
+  --space-2xl: var(--p-space-12);
+  --space-3xl: var(--p-space-16);
+  --space-4xl: var(--p-space-24);
+  --primitive-radius-pill: var(--p-r-pill);
+  --primitive-radius-md: var(--p-r-md);
+  --primitive-radius-sm: var(--p-r-sm);
+  --code-radius: var(--p-r-sm);
+  --tag-radius: var(--p-r-sm);
+  --panel-radius: var(--p-r-lg);
+  --control-radius: var(--p-r-md);
+  --motion-ease: var(--p-ease-out);
+  --motion-fast: var(--p-dur-1);
+  --motion-base: var(--p-dur-2);
+  --motion-slow: var(--p-dur-3);
+
+  --shadow-hairline:
+    0 1px 0 color-mix(in oklch, var(--s-color-ink) 7%, transparent);
+  --shadow-soft:
+    0 1px 0 color-mix(in oklch, var(--s-color-ink) 5%, transparent),
+    0 8px 28px -14px color-mix(in oklch, var(--s-color-ink) 14%, transparent);
+  --shadow-card-hover:
+    0 1px 0 color-mix(in oklch, var(--s-color-ink) 6%, transparent),
+    0 22px 50px -22px color-mix(in oklch, var(--s-color-ink) 22%, transparent);
+  --page-bg: var(--s-color-paper);
+  --page-text: var(--s-color-ink);
+  --page-grid-line: var(--s-color-page-grid);
+
+  /* Component: page */
+  --panel-bg: var(--s-color-elevated);
+  --panel-border: var(--s-color-border);
+  --panel-shadow: var(--shadow-hairline);
+  --panel-accent-bar: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--s-color-accent) 70%, transparent) 0%,
+    color-mix(in oklch, var(--s-color-accent) 15%, transparent) 50%,
+    transparent 100%
+  );
+
+  /* Component: card */
+  --card-bg: var(--s-color-elevated);
+  --card-bg-muted: var(--s-color-paper-subtle);
+
+  /* Component: control */
+  --control-bg: var(--s-color-paper-subtle);
+  --control-text: var(--s-color-ink);
+  --control-text-muted: var(--s-color-ink-muted);
+  --control-border: var(--s-color-border);
+  --control-focus: var(--s-color-focus-ring);
+  --control-active-bg: var(--s-color-accent-soft);
+
+  /* Typography: section labels (H2 in panels) */
+  --type-section-size: 0.8125rem;
+  --type-section-weight: 650;
+  --type-section-tracking: var(--p-tracking-section);
+  --type-section-color: var(--s-color-ink-muted);
+}
+
+:root,
+[data-theme="light"],
+[data-theme="dark"] {
+  --paper: var(--page-bg);
+  --ink: var(--page-text);
+  --ink-muted: var(--color-text-muted);
+  --rule: var(--panel-border);
+  --accent: var(--color-accent);
+  --accent-soft: var(--color-accent-soft);
+  --max-read: var(--measure-readable);
+}
+
+/* Dark: elevation reads better with true shadow (after semantic --shadow-* above). */
+[data-theme="dark"] {
+  --shadow-hairline: 0 1px 0 rgb(0 0 0 / 0.35);
+  --shadow-soft:
+    0 1px 0 rgb(0 0 0 / 0.3),
+    0 8px 28px -14px rgb(0 0 0 / 0.5);
+  --shadow-card-hover:
+    0 1px 0 rgb(0 0 0 / 0.35),
+    0 24px 56px -24px rgb(0 0 0 / 0.55);
+}

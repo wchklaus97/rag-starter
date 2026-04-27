@@ -1,0 +1,49 @@
+{
+  "provenance": {
+    "summary": "All files in this folder are original, synthetic 'internal policy' style text for demos. They are not scraped from the web, not from customer data, and not from a public dataset — so you can index them in a demo without license surprises.",
+    "if_you_want_public_sources": "You can replace or augment these with explicitly licensed text (e.g. CC0 / public domain) from government open data, Project Gutenberg, or your own policies. If you do, update this manifest and re-run the Streamlit 'Build index' step."
+  },
+  "categories": {
+    "security_compliance": "Security & compliance",
+    "hr_onboarding": "HR & onboarding",
+    "finance_travel": "Finance & travel",
+    "customer_support": "Customer support / SLA"
+  },
+  "documents": [
+    {
+      "file": "security_policy.md",
+      "category": "security_compliance",
+      "title": "Security policy summary",
+      "example_questions": [
+        "How quickly do we need to report suspected phishing?",
+        "How soon does security start triage for critical incidents?",
+        "What kind of data counts as sensitive company data?"
+      ]
+    },
+    {
+      "file": "employee_onboarding.md",
+      "category": "hr_onboarding",
+      "title": "Employee onboarding",
+      "example_questions": [
+        "When do new hires need to finish security training?",
+        "When do employees get access to the analytics workspace?"
+      ]
+    },
+    {
+      "file": "travel_reimbursement.md",
+      "category": "finance_travel",
+      "title": "Travel reimbursement",
+      "example_questions": [
+        "When is manager approval required for travel?"
+      ]
+    },
+    {
+      "file": "customer_support_sla.txt",
+      "category": "customer_support",
+      "title": "Customer support SLA",
+      "example_questions": [
+        "What is the first response target for a Priority 1 support issue?"
+      ]
+    }
+  ]
+}

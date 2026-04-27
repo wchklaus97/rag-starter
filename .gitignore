@@ -1,0 +1,16 @@
+/target
+.env
+chat.json
+.cursor/*.log
+.venv/
+__pycache__/
+.pytest_cache/
+rag_index.json
+
+# Local symlinks from scripts/link-agent-skills.sh (point into $HOME or skills/)
+.claude/skills/gstack
+.claude/skills/rag-starter
+.cursor/skills/gstack
+.cursor/skills/rag-starter
+.codex/skills/gstack
+.codex/skills/rag-starter

@@ -1,0 +1,81 @@
+{
+  "note": {
+    "en": "Public or network-accessible sources for RAG demos. Check each source's current license and terms before copying content into demo_docs/.",
+    "zh": "適合 RAG 示範的公開或網路可存取資料來源。複製內容到 demo_docs/ 前，請先確認授權和使用條款。",
+    "zh_hans": "适合 RAG 演示的公开或网络可访问数据来源。复制内容到 demo_docs/ 前，请先确认授权和使用条款。"
+  },
+  "examples": [
+    {
+      "title": { "en": "Project Gutenberg public-domain books", "zh": "Project Gutenberg 公版書籍", "zh_hans": "Project Gutenberg 公版书籍" },
+      "category": { "en": "Long-form English text", "zh": "英文長文", "zh_hans": "英文长文" },
+      "sourceUrl": "https://www.gutenberg.org/",
+      "licenseNote": { "en": "Many works are public domain in the US, but verify status in your jurisdiction.", "zh": "許多作品在美國屬公版，但請確認你所在地的狀態。", "zh_hans": "许多作品在美国属于公版，但请确认你所在地的状态。" },
+      "goodFor": { "en": "Long narrative chunks, semantic search, citation demos.", "zh": "長篇敘事 chunk、語意搜尋、引用示範。", "zh_hans": "长篇叙事 chunk、语义搜索、引用演示。" },
+      "recommendedModels": [
+        "openai/text-embedding-3-small",
+        "baai/bge-m3"
+      ],
+      "why": { "en": "General English text does not need a code-specific model. Start cheap and compare retrieval quality.", "zh": "一般英文文本不需要程式碼專用模型。先用便宜模型起步，再比較檢索品質。", "zh_hans": "一般英文文本不需要代码专用模型。先用便宜模型起步，再比较检索质量。" }
+    },
+    {
+      "title": { "en": "Wikipedia dumps", "zh": "Wikipedia 資料 dump", "zh_hans": "Wikipedia 数据 dump" },
+      "category": { "en": "Multilingual encyclopedia text", "zh": "多語百科文本", "zh_hans": "多语百科文本" },
+      "sourceUrl": "https://dumps.wikimedia.org/",
+      "licenseNote": { "en": "Usually CC BY-SA. Attribution and share-alike requirements apply.", "zh": "通常是 CC BY-SA，需注意署名與相同方式分享。", "zh_hans": "通常是 CC BY-SA，需要注意署名和相同方式分享。" },
+      "goodFor": { "en": "Multilingual retrieval, broad factual search, topic classification.", "zh": "多語檢索、廣泛事實搜尋、主題分類。", "zh_hans": "多语检索、广泛事实搜索、主题分类。" },
+      "recommendedModels": [
+        "baai/bge-m3",
+        "qwen/qwen3-embedding-8b"
+      ],
+      "why": { "en": "These are stronger candidates when the corpus includes many languages or mixed-language content.", "zh": "當語料包含多種語言或混合語言內容時，這些模型更值得測。", "zh_hans": "当语料包含多种语言或混合语言内容时，这些模型更值得测试。" }
+    },
+    {
+      "title": { "en": "SEC company filings", "zh": "SEC 公司申報文件", "zh_hans": "SEC 公司申报文件" },
+      "category": { "en": "Finance and compliance documents", "zh": "金融與合規文件", "zh_hans": "金融与合规文档" },
+      "sourceUrl": "https://www.sec.gov/edgar/search/",
+      "licenseNote": { "en": "Public filings, but follow SEC fair access rules and attribution expectations.", "zh": "公開申報文件，但請遵守 SEC fair access 規則與引用要求。", "zh_hans": "公开申报文件，但请遵守 SEC fair access 规则和引用要求。" },
+      "goodFor": { "en": "Long structured documents, risk factors, compliance-style RAG.", "zh": "長篇結構化文件、風險因素、合規風格 RAG。", "zh_hans": "长篇结构化文档、风险因素、合规风格 RAG。" },
+      "recommendedModels": [
+        "openai/text-embedding-3-large",
+        "openai/text-embedding-3-small"
+      ],
+      "why": { "en": "Filings are long and wording-sensitive. Use small as baseline, large when relevant chunks are missed.", "zh": "申報文件很長且用詞敏感。先用 small 當基線，若漏掉相關 chunk 再試 large。", "zh_hans": "申报文件很长且用词敏感。先用 small 当基线，若漏掉相关 chunk 再试 large。" }
+    },
+    {
+      "title": { "en": "Python documentation", "zh": "Python 文件", "zh_hans": "Python 文档" },
+      "category": { "en": "Developer docs", "zh": "開發者文件", "zh_hans": "开发者文档" },
+      "sourceUrl": "https://docs.python.org/3/",
+      "licenseNote": { "en": "Python docs have their own license. Preserve notices if copying.", "zh": "Python 文件有自己的授權。複製時請保留授權提示。", "zh_hans": "Python 文档有自己的授权。复制时请保留授权提示。" },
+      "goodFor": { "en": "API docs, developer assistant demos, code-adjacent retrieval.", "zh": "API 文件、開發助理示範、近程式碼檢索。", "zh_hans": "API 文档、开发助手演示、近代码检索。" },
+      "recommendedModels": [
+        "mistral/codestral-embed-2505",
+        "qwen/qwen3-embedding-8b"
+      ],
+      "why": { "en": "Developer docs benefit from models that understand identifiers, APIs, and technical phrasing.", "zh": "開發者文件適合能理解識別符、API 和技術表述的模型。", "zh_hans": "开发者文档适合能理解标识符、API 和技术表述的模型。" }
+    },
+    {
+      "title": { "en": "Rust documentation", "zh": "Rust 文件", "zh_hans": "Rust 文档" },
+      "category": { "en": "Developer docs", "zh": "開發者文件", "zh_hans": "开发者文档" },
+      "sourceUrl": "https://doc.rust-lang.org/",
+      "licenseNote": { "en": "Rust docs are open source, but keep license notices when copying.", "zh": "Rust 文件是開源的，但複製時請保留授權提示。", "zh_hans": "Rust 文档是开源的，但复制时请保留授权提示。" },
+      "goodFor": { "en": "Technical docs, code examples, programming-language RAG.", "zh": "技術文件、程式碼範例、程式語言 RAG。", "zh_hans": "技术文档、代码示例、编程语言 RAG。" },
+      "recommendedModels": [
+        "mistral/codestral-embed-2505",
+        "qwen/qwen3-embedding-8b"
+      ],
+      "why": { "en": "Rust docs include code, type names, examples, and conceptual explanation.", "zh": "Rust 文件包含程式碼、型別名稱、範例與概念解釋。", "zh_hans": "Rust 文档包含代码、类型名称、示例和概念解释。" }
+    },
+    {
+      "title": { "en": "Government open data publications", "zh": "政府開放資料出版物", "zh_hans": "政府开放数据出版物" },
+      "category": { "en": "Policy and public information", "zh": "政策與公共資訊", "zh_hans": "政策与公共信息" },
+      "sourceUrl": "https://www.data.gov/",
+      "licenseNote": { "en": "Many datasets and publications are public, but terms vary by agency and country.", "zh": "許多資料集和出版物是公開的，但條款會因機構與國家而異。", "zh_hans": "许多数据集和出版物是公开的，但条款会因机构和国家而异。" },
+      "goodFor": { "en": "Policy-style KB demos, public information assistants.", "zh": "政策風格知識庫示範、公共資訊助理。", "zh_hans": "政策风格知识库演示、公共信息助手。" },
+      "recommendedModels": [
+        "openai/text-embedding-3-small",
+        "baai/bge-m3"
+      ],
+      "why": { "en": "Policy text is similar to internal KB docs. Start with cheap general retrieval models.", "zh": "政策文本和內部知識庫文件很像。先用便宜的通用檢索模型起步。", "zh_hans": "政策文本和内部知识库文档很像。先用便宜的通用检索模型起步。" }
+    }
+  ]
+}

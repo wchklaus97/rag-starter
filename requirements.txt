@@ -1,0 +1,6 @@
+streamlit
+openai
+anthropic
+numpy
+python-dotenv
+pytest

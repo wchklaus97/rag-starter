@@ -1,0 +1,40 @@
+{
+  "$comment": "Three-layer design tokens (mirrors assets/design-tokens.css).",
+  "primitive": {
+    "color": {
+      "paper": { "0": "oklch light paper", "1": "oklch subtle", "2": "oklch stripe" },
+      "ink": { "950": "headings", "800": "borders", "600": "muted", "500": "faint" },
+      "violet": { "400": "dark link", "500": "soft mix", "600": "accent" },
+      "white": "elevated card (light) / base (dark)"
+    },
+    "space": { "1": "0.25rem", "2": "0.5rem", "3": "0.75rem", "4": "1rem", "5": "1.25rem", "6": "1.5rem", "8": "2rem", "10": "2.5rem", "12": "3rem", "16": "4rem", "20": "5rem", "24": "6rem" },
+    "radius": { "sm": "0.2rem", "md": "0.4rem", "lg": "0.55rem", "xl": "0.75rem", "pill": "999px" },
+    "fontFamily": {
+      "display": "Fraunces",
+      "body": "Source Sans 3",
+      "mono": "IBM Plex Mono"
+    }
+  },
+  "semantic": {
+    "light": {
+      "paper": "{primitive.color.paper.0}",
+      "elevated": "{primitive.color.white}",
+      "ink": "{primitive.color.ink.950}",
+      "accent": "{primitive.color.violet.600}",
+      "border": "color-mix ink + paper"
+    },
+    "dark": {
+      "paper": "oklch ~0.17 0.035 275",
+      "elevated": "oklch ~0.24 0.04 275",
+      "ink": "oklch ~0.96 (light text)",
+      "accent": "oklch ~0.72 violet (higher for contrast)"
+    }
+  },
+  "component": {
+    "page": ["--page-bg", "--page-text", "--page-grid-line"],
+    "panel": ["--panel-bg", "--panel-border", "--panel-radius", "--panel-shadow", "--panel-accent-bar"],
+    "card": ["--card-bg", "hover uses --shadow-card-hover"],
+    "control": ["--control-bg", "--control-border", "--control-focus", "--control-active-bg"],
+    "code": ["--code-bg", "--code-radius"]
+  }
+}
