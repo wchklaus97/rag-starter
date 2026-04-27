@@ -6,6 +6,8 @@ This folder is intentionally separate from the Rust CLI and Streamlit KB demo. I
 
 The page supports **English**, **繁體中文**, and **简体中文**.
 
+Use the header **Map** control (§) to open a **guide map** overlay: it shows where you are on the page, highlights the matching section as you scroll, and links to each major section (including the agent framework block when that content is loaded).
+
 ## Files
 
 - `index.html` — static page shell
@@ -27,7 +29,9 @@ cd rag_model_site
 python3 -m http.server 8765
 ```
 
-Open `http://127.0.0.1:8765/`.
+Open `http://127.0.0.1:8765/` (if the port is in use, pick another port, e.g. `8766`).
+
+Multilingual **guides hub** stubs for GitHub Pages-style paths: `/guides/`, `/en/guides/`, `/zh/guides/`, `/zh-hans/guides/` (static `index.html` in each folder).
 
 ## Refresh model data
 

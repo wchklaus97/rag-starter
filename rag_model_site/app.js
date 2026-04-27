@@ -17,6 +17,12 @@ const THEME_KEY = "rag-field-guide-theme";
 
 function loadLang() {
   try {
+    const q = new URLSearchParams(window.location.search).get("lang");
+    if (q === "en" || q === "zh" || q === "zh_hans") return q;
+  } catch {
+    /* ignore */
+  }
+  try {
     const s = localStorage.getItem(STORAGE_KEY);
     if (s === "en" || s === "zh" || s === "zh_hans") return s;
   } catch {
@@ -114,6 +120,11 @@ function applyI18nToDom() {
     if (!key || u[key] === undefined) return;
     el.textContent = u[key];
   });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-aria");
+    if (!key || u[key] === undefined) return;
+    el.setAttribute("aria-label", u[key]);
+  });
   const sp = document.getElementById("search-input");
   const phKey = sp?.getAttribute("data-i18n-placeholder");
   if (sp && phKey && u[phKey] !== undefined) {
@@ -158,6 +169,109 @@ function syncThemeButton() {
     hasUi ? (dark ? t("themeToLight") : t("themeToDark")) : dark ? "Light theme" : "Dark theme",
   );
   btn.setAttribute("aria-pressed", dark ? "true" : "false");
+}
+
+/** Scroll order for “where you are” (matches `index.html` #ids). */
+const SECTION_MAP_CONFIG = [
+  { id: "decision-heading", nameKey: "navMapCorpus", blurbKey: "navMapCorpusBlurb" },
+  { id: "model-grid", nameKey: "navMapModels", blurbKey: "navMapModelsBlurb" },
+  { id: "public-examples-heading", nameKey: "navMapExamples", blurbKey: "navMapExamplesBlurb" },
+  { id: "method-heading", nameKey: "navMapMethod", blurbKey: "navMapMethodBlurb" },
+  { id: "sources-heading", nameKey: "navMapSources", blurbKey: "navMapSourcesBlurb" },
+  { id: "agent-guide", nameKey: "navMapAgent", blurbKey: "navMapAgentBlurb" },
+];
+
+function getCurrentSectionId() {
+  const marker = 140;
+  let current = SECTION_MAP_CONFIG[0].id;
+  for (const s of SECTION_MAP_CONFIG) {
+    const el = document.getElementById(s.id);
+    if (!el) continue;
+    if (s.id === "agent-guide" && el.hidden) continue;
+    if (el.getBoundingClientRect().top <= marker) current = s.id;
+  }
+  return current;
+}
+
+function updateSectionMapReadout() {
+  const u = state.data?.ui?.[state.lang] || {};
+  const out = document.getElementById("section-map-current");
+  if (!out) return;
+  const id = getCurrentSectionId();
+  const row = SECTION_MAP_CONFIG.find((s) => s.id === id);
+  if (!row) {
+    out.textContent = "";
+    return;
+  }
+  const name = u[row.nameKey] || row.id;
+  const blurb = u[row.blurbKey] || "";
+  const prefix = u.sectionMapYouAre || "";
+  out.textContent = blurb ? `${prefix} ${name} — ${blurb}` : `${prefix} ${name}`.trim();
+}
+
+function updateSectionMapActiveItems() {
+  const id = getCurrentSectionId();
+  document.querySelectorAll("#section-map-list .section-map__item").forEach((li) => {
+    const t = li.getAttribute("data-section-target");
+    li.classList.toggle("is-active", t === id);
+  });
+}
+
+let sectionMapScrollScheduled = false;
+function scheduleSectionMapScrollSync() {
+  if (sectionMapScrollScheduled) return;
+  sectionMapScrollScheduled = true;
+  requestAnimationFrame(() => {
+    sectionMapScrollScheduled = false;
+    updateSectionMapReadout();
+    updateSectionMapActiveItems();
+  });
+}
+
+function syncSectionMapAgentItem() {
+  const wrap = document.getElementById("agent-guide");
+  const li = document.getElementById("section-map-item-agent");
+  if (!wrap || !li) return;
+  li.hidden = wrap.hidden;
+}
+
+function setSectionMapOpen(open) {
+  const panel = document.getElementById("section-map");
+  const btn = document.getElementById("section-map-open");
+  if (!panel || !btn) return;
+  panel.hidden = !open;
+  panel.setAttribute("aria-hidden", open ? "false" : "true");
+  btn.setAttribute("aria-expanded", open ? "true" : "false");
+  document.body.classList.toggle("section-map-open", open);
+  if (open) {
+    const closeBtn = document.getElementById("section-map-close");
+    closeBtn?.focus();
+  } else {
+    btn.focus();
+  }
+}
+
+function wireSectionMap() {
+  const openBtn = document.getElementById("section-map-open");
+  const closeBtn = document.getElementById("section-map-close");
+  const backdrop = document.getElementById("section-map-backdrop");
+  const panel = document.getElementById("section-map");
+  if (!openBtn || !panel) return;
+
+  const close = () => setSectionMapOpen(false);
+  openBtn.addEventListener("click", () => setSectionMapOpen(true));
+  closeBtn?.addEventListener("click", close);
+  backdrop?.addEventListener("click", close);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !panel.hidden) close();
+  });
+  document.getElementById("section-map-list")?.addEventListener("click", (e) => {
+    const a = e.target.closest("a[href^='#']");
+    if (a) window.setTimeout(close, 0);
+  });
+
+  window.addEventListener("scroll", scheduleSectionMapScrollSync, { passive: true });
+  window.addEventListener("hashchange", scheduleSectionMapScrollSync);
 }
 
 function wireTheme() {
@@ -488,6 +602,8 @@ function renderAgentFieldGuide() {
   }
 
   updateWizardResultBox();
+  syncSectionMapAgentItem();
+  scheduleSectionMapScrollSync();
 }
 
 function renderPublicExamples() {
@@ -541,6 +657,8 @@ function wireLang() {
       renderCards();
       renderPublicExamples();
       renderAgentFieldGuide();
+      updateSectionMapReadout();
+      updateSectionMapActiveItems();
     });
   });
   state.lang = loadLang();
@@ -576,6 +694,11 @@ async function init() {
   }
   wireTheme();
   wireLang();
+  try {
+    if (new URLSearchParams(window.location.search).get("lang")) saveLang();
+  } catch {
+    /* ignore */
+  }
   applyI18nToDom();
   renderRecommendations();
   renderTesting();
@@ -585,6 +708,9 @@ async function init() {
   renderPublicExamples();
   renderAgentFieldGuide();
   wireSearch();
+  wireSectionMap();
+  syncSectionMapAgentItem();
+  scheduleSectionMapScrollSync();
 }
 
 init().catch((err) => {

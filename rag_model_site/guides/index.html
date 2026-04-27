@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Browse the RAG model field guide by topic: corpus fit, embedding models, agent frameworks, methodology, and sources."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f7f4ef" id="meta-theme-color" />
+    <title>Guides hub · RAG Model Field Guide</title>
+    <script>
+      (function () {
+        try {
+          var k = "rag-field-guide-theme";
+          var t = localStorage.getItem(k);
+          var d = document.documentElement;
+          if (t === "light" || t === "dark") d.setAttribute("data-theme", t);
+          else if (window.matchMedia("(prefers-color-scheme: dark)").matches) d.setAttribute("data-theme", "dark");
+          else d.setAttribute("data-theme", "light");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../assets/design-tokens.css" />
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "RAG Model Field Guide — Guides hub",
+        "description": "Topic index for the static RAG embedding and agent field guide.",
+        "isPartOf": { "@type": "WebSite", "name": "RAG Model Field Guide" }
+      }
+    </script>
+  </head>
+  <body class="guide-hub">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" role="banner">
+      <div class="header-inner">
+        <div class="header-titles">
+          <nav class="header-breadcrumb" aria-label="Breadcrumb">
+            <a class="header-breadcrumb__link" href="../index.html">Home</a>
+            <span class="header-breadcrumb__sep" aria-hidden="true">/</span>
+            <span class="header-breadcrumb__current">Guides</span>
+          </nav>
+          <p class="eyebrow">Index</p>
+          <h1>Guides hub</h1>
+          <p class="lede">
+            Jump to a section of the <strong>RAG model field guide</strong> — the same long page, organized by intent (like a docs hub).
+            Choose a display language for the full guide:
+            <span class="guide-hub__lang-row">
+              <a class="guide-hub__lang-link" href="../index.html?lang=en">English</a>
+              <span class="guide-hub__lang-sep" aria-hidden="true">·</span>
+              <a class="guide-hub__lang-link" href="../index.html?lang=zh">繁體中文</a>
+              <span class="guide-hub__lang-sep" aria-hidden="true">·</span>
+              <a class="guide-hub__lang-link" href="../index.html?lang=zh_hans">简体中文</a>
+            </span>
+          </p>
+        </div>
+        <div class="header-actions">
+          <a class="guide-hub__cta" href="../index.html">Open full guide</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="main guide-hub__main" tabindex="-1">
+      <p class="guide-hub__path-note muted" role="note">
+        Locale-style URLs: <code class="font-mono">/en/guides/</code>, <code class="font-mono">/zh/guides/</code>,
+        <code class="font-mono">/zh-hans/guides/</code> — redirect to this hub or the guide with the right language.
+      </p>
+
+      <section class="guide-hub__section" aria-labelledby="gh-orient">
+        <h2 id="gh-orient" class="guide-hub__section-title">Quick orientation</h2>
+        <p class="guide-hub__section-lede">Start from your corpus, then filter and compare models.</p>
+        <ul class="guide-hub__grid" role="list">
+          <li>
+            <a class="guide-card" href="../index.html#decision-heading">
+              <span class="guide-card__label">If your corpus is…</span>
+              <span class="guide-card__desc">Heuristic “fit” and suggested embedding stacks.</span>
+            </a>
+          </li>
+          <li>
+            <a class="guide-card" href="../index.html#filter-heading">
+              <span class="guide-card__label">Filter &amp; search</span>
+              <span class="guide-card__desc">Use case chips, model search, and the grid.</span>
+            </a>
+          </li>
+          <li>
+            <a class="guide-card" href="../index.html#model-grid">
+              <span class="guide-card__label">Model cards</span>
+              <span class="guide-card__desc">Cost, trade-offs, and notes for each model.</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="guide-hub__section" aria-labelledby="gh-rag">
+        <h2 id="gh-rag" class="guide-hub__section-title">RAG &amp; embeddings</h2>
+        <p class="guide-hub__section-lede">The embedding slice of the guide: data, testing, and examples.</p>
+        <ul class="guide-hub__grid" role="list">
+          <li>
+            <a class="guide-card" href="../index.html#rag-embeddings">
+              <span class="guide-card__label">RAG &amp; embeddings block</span>
+              <span class="guide-card__desc">Top of the technical notebook — models and controls.</span>
+            </a>
+          </li>
+          <li>
+            <a class="guide-card" href="../index.html#public-examples-heading">
+              <span class="guide-card__label">Public example sources</span>
+              <span class="guide-card__desc">Sample corpora to try with retrieval.</span>
+            </a>
+          </li>
+          <li>
+            <a class="guide-card" href="../index.html#method-heading">
+              <span class="guide-card__label">Methodology &amp; testing</span>
+              <span class="guide-card__desc">How data is gathered and a practical test plan.</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="guide-hub__section" aria-labelledby="gh-agent">
+        <h2 id="gh-agent" class="guide-hub__section-title">Agent frameworks</h2>
+        <p class="guide-hub__section-lede">Protocols, patterns, and a short list to shortlist a stack.</p>
+        <ul class="guide-hub__grid" role="list">
+          <li>
+            <a class="guide-card" href="../index.html#agent-guide">
+              <span class="guide-card__label">Agent field guide</span>
+              <span class="guide-card__desc">Multilingual chooser and framework map.</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="guide-hub__section" aria-labelledby="gh-ref">
+        <h2 id="gh-ref" class="guide-hub__section-title">Reference &amp; sources</h2>
+        <p class="guide-hub__section-lede">Links, methodology notes, and long-form export.</p>
+        <ul class="guide-hub__grid" role="list">
+          <li>
+            <a class="guide-card" href="../index.html#sources-heading">
+              <span class="guide-card__label">Sources &amp; reference</span>
+              <span class="guide-card__desc">OpenRouter, docs, and related reading.</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <p class="footer-note muted">
+        <a href="../index.html">← Back to field guide</a>
+        &nbsp;·&nbsp; Static site — <code class="font-mono">rag_model_site/</code>
+      </p>
+    </footer>
+  </body>
+</html>
