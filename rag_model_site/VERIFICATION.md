@@ -21,7 +21,8 @@ Open `http://127.0.0.1:8765/` in a browser. (Opening `index.html` as a `file://`
 4. **Sources** — On each card, “View on OpenRouter” (or 在 OpenRouter 檢視) should open a valid OpenRouter model or collection page.
 5. **Markdown** — The link to `OPENROUTER_EMBEDDING_MODELS.md` in the “Sources & reference” section should download or display the file on GitHub Pages.
 6. **Responsive** — Narrow the window to ~360px: layout should not overflow horizontally; model grid should stack.
-7. **No network dependency** — In DevTools → Network, confirm there are no XHR/fetch calls except `data/models.json`, `data/public_examples.json`, and fonts from Google (optional: self-host fonts later to remove that request).
+7. **Guide map (Map / §)** — Open the header control: overlay lists sections, “current focus” matches scroll, one row is highlighted, **Escape** and backdrop close the dialog; section links jump and close the overlay. When agent content is loaded, the **Agent frameworks** row appears.
+8. **No network dependency** — In DevTools → Network, confirm there are no XHR/fetch calls except `data/models.json`, `data/public_examples.json`, and fonts from Google (optional: self-host fonts later to remove that request).
 
 ## Optional: Playwright
 

@@ -1,4 +1,6 @@
-# Build-free GitHub Pages: upload the standalone /rag_model_site static site
+# Build-free GitHub Pages: upload the standalone /rag_model_site static site.
+# Prerequisite (once per repo): Settings → Pages → Build and deployment → Source: GitHub Actions.
+# Otherwise configure-pages fails with "Get Pages site failed".
 name: Deploy GitHub Pages
 
 on:

@@ -7,8 +7,9 @@
 
 | URL | Result |
 |-----|--------|
-| **Live:** `https://wchklaus97.github.io/ai-rag-agent-guide-site/` | Home loads; language switch works; **no `/guides/` yet** (404 until you deploy latest `rag_model_site/`). |
-| **Local:** `http://127.0.0.1:8765/` (e.g. `python3 -m http.server 8765` from `rag_model_site/`) | **Guides hub** and **`?lang=`** behave as designed. |
+| **This repo (Pages):** `https://wchklaus97.github.io/rag-starter/` | Deploys from [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) after **Settings → Pages → Source: GitHub Actions** is set once. |
+| **Other mirror (if any):** e.g. `https://wchklaus97.github.io/ai-rag-agent-guide-site/` | Separate repo; not updated by pushes here. |
+| **Local:** `http://127.0.0.1:8765/` (`python3 -m http.server 8765` from `rag_model_site/`) | **Guides hub** at `/guides/` and locale paths; **Map** overlay smoke-tested. |
 
 ## Viewports tested
 
@@ -32,7 +33,7 @@
 
 ## Issues / follow-ups (non-blocking)
 
-1. **Deploy** so GitHub Pages includes `guides/`, `en|zh|zh-hans/guides/`, and latest CSS (grid + safe-area + hub lang links).
+1. **Enable Pages** on `rag-starter` (see root README) so the deploy workflow goes green; then confirm `/guides/` and locale `*/guides/` on the `github.io/rag-starter` URL.
 2. **i18n gap (pre-existing):** e.g. “Filters” / “Sources & reference” section labels may stay English in Traditional Chinese — optional JSON follow-up.
 3. **Real devices:** re-check on iOS Safari + Chrome Android (font, 100vh, overscroll).
 

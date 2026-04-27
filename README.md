@@ -160,11 +160,11 @@ The Streamlit **Embedding model guide** tab also reads `rag_model_site/data/publ
 
 ### Publish on GitHub Pages
 
-1. Push to GitHub. Under **Settings → Pages**, set the source to **GitHub Actions** (or deploy from the `gh-pages` branch if you use a different flow).
-2. The workflow [`.github/workflows/pages.yml`](./.github/workflows/pages.yml) uploads the [`rag_model_site/`](./rag_model_site/) folder to Pages.
-3. After deploy, your site is the Pages URL (often `https://<user>.github.io/<repo>/`).
-
-**First-time setup:** in the repo’s Pages settings, choose **GitHub Actions** as the build source if prompted.
+1. **One-time (required):** in the repository go to **Settings → Pages → Build and deployment**, set **Source** to **GitHub Actions** (not “Deploy from a branch”) and save. If this step is skipped, the **Deploy GitHub Pages** workflow fails at *Setup Pages* with `Get Pages site failed` / `Not Found` until Pages exists.
+2. Push to `main` (or run the workflow manually: **Actions → Deploy GitHub Pages → Run workflow**).
+3. The workflow [`.github/workflows/pages.yml`](./.github/workflows/pages.yml) uploads the [`rag_model_site/`](./rag_model_site/) folder to Pages.
+4. When the run succeeds, the site URL is `https://wchklaus97.github.io/rag-starter/` (or **Settings → Pages** shows the public URL).  
+   *A separate mirror repo (e.g. `ai-rag-agent-guide-site`) is optional; it does not share this repo’s Pages site.*
 
 ### Verification
 
