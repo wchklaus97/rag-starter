@@ -1,6 +1,6 @@
 Employee Onboarding Guide
 
-New hires are expected to complete account setup on their first business day.
+New hires are expected to **complete** account setup on their first business day.
 IT sends laptop credentials before 9:00 AM local time.
 
 Required first-week tasks:
