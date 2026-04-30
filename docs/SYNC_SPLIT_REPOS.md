@@ -152,13 +152,53 @@ uv run python scripts/collect_openrouter_models.py   # when documented in site R
 
 ---
 
-## 4) Hub `ai-rag-workspace`
+## 4) `swift-gemma4-sample`
+
+### Copy
+
+| Source | Destination |
+|--------|-------------|
+| `swift-gemma4-sample/` (entire tree) | `/` (root of split repo) |
+
+**Do not** copy `swift-gemma4-sample/models/` — models should never be pushed to GitHub.
+**Do not** copy `swift-gemma4-sample/.build/` or `swift-gemma4-sample/.swiftpm/` — these are generated directories.
+
+### `.gitignore` — enforce strict exclusions
+
+Ensure the public repository has a strict `.gitignore` to prevent accidental model uploads:
+
+```text
+# Models
+models/
+gemma-4-e2b-it-4bit/
+*.safetensors
+*.bin
+
+# Swift/Xcode
+.build/
+.swiftpm/
+xcuserdata/
+DerivedData/
+*.xcworkspace/
+```
+
+### Verify
+
+```bash
+cd /path/to/swift-gemma4-sample
+swift test
+xcodebuild -scheme Gemma4DeviceSample -destination 'generic/platform=iOS Simulator,name=iPhone 15' build  # Just to ensure it compiles, even though it doesn't run on simulators.
+```
+
+---
+
+## 5) Hub `ai-rag-workspace`
 
 Update links / submodule pins / “last updated” copy if you changed what each repo is for. No automatic sync from this monorepo.
 
 ---
 
-## 5) Quick `rsync` patterns (optional)
+## 6) Quick `rsync` patterns (optional)
 
 From `rag-starter` root, **examples** (adjust `DEST`):
 
@@ -177,13 +217,16 @@ rsync -a demo_docs/ "$DEST_KB/demo_docs/"
 rsync -a --delete rag_model_site/ "$DEST_SITE/rag_model_site/"
 cp OPENROUTER_EMBEDDING_MODELS.md "$DEST_SITE/"
 rsync -a scripts/collect_openrouter_models.py "$DEST_SITE/scripts/"
+
+# Swift iOS App
+rsync -a --delete --exclude 'models/' --exclude '.build/' --exclude '.swiftpm/' swift-gemma4-sample/ "$DEST_SWIFT/"
 ```
 
 `--delete` removes files in the destination that no longer exist in the monorepo; use only when you intend **full mirror** of that subtree.
 
 ---
 
-## 6) After sync
+## 7) After sync
 
 - Bump `CHANGELOG` / version if the split repos use them.
 - **PR per repo**; don’t force-push `main` without review.

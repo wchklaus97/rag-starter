@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:rag-starter}/swift-gemma4-sample",
+            "name": "Debug gemma4-sample (swift-gemma4-sample)",
+            "target": "gemma4-sample",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug gemma4-sample (swift-gemma4-sample)"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:rag-starter}/swift-gemma4-sample",
+            "name": "Release gemma4-sample (swift-gemma4-sample)",
+            "target": "gemma4-sample",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release gemma4-sample (swift-gemma4-sample)"
+        }
+    ]
+}
