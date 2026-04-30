@@ -67,6 +67,10 @@ To give the Gemma 4 model "Actions" (like checking device status or sending emai
 - **Citations:** Implement a UI pattern in Streamlit where document source links (e.g., `[Source: document.md]`) are clickable and open a side-pane with the original text.
 - **Performance:** Use `st.cache_resource` for the vector index to prevent re-loading the 100MB+ index on every script rerun.
 
+### 3. Browser hybrid demo (GitHub Pages)
+- **Where:** Static page `rag_model_site/kb-hybrid-demo.html` → deployed as `/kb-hybrid-demo.html` (same embedding model for CI-built chunk vectors and in-browser query vectors via `@xenova/transformers`).
+- **Distinction:** This path is **retrieval-only** and **fully client-side**; it does **not** use OpenAI embeddings. The Streamlit KB (`kb_rag.py`) remains the “production-style” hybrid stack with LlamaIndex/OpenAI when configured locally.
+
 ---
 
 ## Track 4: Static Field Guide (Site & Metadata)

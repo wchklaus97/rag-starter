@@ -40,3 +40,7 @@ The Streamlit **Embedding model guide** tab also reads `rag_model_site/data/publ
 ## Verification
 
 See `rag_model_site/VERIFICATION.md` for a manual and optional Playwright checklist.
+
+## Client-side hybrid retrieval demo
+
+`/kb-hybrid-demo.html` (source: `rag_model_site/kb-hybrid-demo.html`) demonstrates BM25 + dense retrieval + reciprocal rank fusion with **no backend**. The corpus and embeddings are baked into `rag_model_site/data/kb_hybrid_demo.json` at deploy time (`npm run build:kb-demo` in CI). Model: **Xenova/all-MiniLM-L6-v2** (Transformers.js in the browser). This is **teaching/parity on the corpus**, not a substitute for the OpenAI-embedding Streamlit flow.
