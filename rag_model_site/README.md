@@ -20,6 +20,7 @@ Use the header **Map** control (§) to open a **guide map** overlay: it shows wh
 - `data/models.json` — model prices, strengths, use cases, source links; top-level **`updated`** is UTC (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SSZ`) for the footer and methodology “snapshot” line
 - `data/public_examples.json` — public/network source examples mapped to recommended embedding models
 - `data/agent_framework_guide.json` — agent stack map, wizard weights, and UI strings (educational; verify vendors independently)
+- `data/kb_hybrid_demo.json` — CI-generated bundle for **client-side hybrid retrieval** on [`kb-hybrid-demo.html`](kb-hybrid-demo.html): BM25 + cosine (Xenova embeddings, same model at build time and in the browser) + reciprocal rank fusion. Not the same embedding space as the Streamlit/OpenAI path in `kb_rag.py`.
 - `OPENROUTER_EMBEDDING_MODELS.md` — long-form notes copied from the repo root
 - `VERIFICATION.md` — local preview and QA checklist
 
@@ -32,9 +33,37 @@ python3 -m http.server 8765
 
 Open `http://127.0.0.1:8765/` (if the port is in use, pick another port, e.g. `8766`).
 
+## Site search (Pagefind)
+
+GitHub Actions runs Pagefind before upload (see `.github/workflows/pages.yml`). For local dev, from the **repo root**:
+
+```bash
+npx --yes pagefind --site rag_model_site --output-subdir pagefind
+```
+
+Then reload the site; the header search box indexes static HTML under `rag_model_site/`. The `pagefind/` output is gitignored.
+
 Multilingual **guides hub** stubs for GitHub Pages-style paths: `/guides/`, `/en/guides/`, `/zh/guides/`, `/zh-hans/guides/` (static `index.html` in each folder).
 
-## Refresh model data
+## Hybrid RAG demo (browser-only)
+
+[`kb-hybrid-demo.html`](kb-hybrid-demo.html) runs retrieval **entirely in the visitor’s browser**: it loads `data/kb_hybrid_demo.json` (chunks + embeddings) and uses **Transformers.js** (via CDN) to embed the query with the **same** model as the build step. The corpus is `demo_docs/` in this repo, chunked similarly to `kb_rag.chunk_text` (see `scripts/build_kb_hybrid_demo.mjs`).
+
+**Regenerate the JSON** (from repo root, after `npm install`):
+
+```bash
+npm run build:kb-demo
+```
+
+**Run unit tests** (RRF + BM25, from repo root):
+
+```bash
+npm run test:kb-hybrid
+```
+
+GitHub Actions runs `build:kb-demo` before Pagefind on each Pages deploy.
+
+**Limits:** fixed corpus only; retrieval-only (no in-browser LLM answer); Xenova/MiniLM space is parallel to—not merged with—OpenAI embeddings used by the Streamlit stack.
 
 From the repo root:
 

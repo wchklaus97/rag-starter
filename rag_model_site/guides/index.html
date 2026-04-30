@@ -26,6 +26,7 @@
     </script>
     <link rel="stylesheet" href="../assets/design-tokens.css" />
     <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../pagefind/pagefind-ui.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -67,6 +68,7 @@
           </p>
         </div>
         <div class="header-actions">
+          <div class="pagefind-site-search" id="pagefind-site-search" aria-label="Site search"></div>
           <a class="guide-hub__cta" href="../index.html">Open full guide</a>
         </div>
       </div>
@@ -123,6 +125,12 @@
             <a class="guide-card" href="../index.html#method-heading">
               <span class="guide-card__label">Methodology &amp; testing</span>
               <span class="guide-card__desc">How data is gathered and a practical test plan.</span>
+            </a>
+          </li>
+          <li>
+            <a class="guide-card" href="../kb-hybrid-demo.html">
+              <span class="guide-card__label">Hybrid RAG demo (browser)</span>
+              <span class="guide-card__desc">BM25 + dense vectors + RRF on <code class="font-mono">demo_docs/</code> — no server.</span>
             </a>
           </li>
         </ul>
@@ -197,6 +205,22 @@
             row.hidden = true;
           });
       })();
+    </script>
+    <script type="module">
+      try {
+        await import("../pagefind/pagefind-ui.js");
+        if (window.PagefindUI) {
+          new window.PagefindUI({
+            element: "#pagefind-site-search",
+            showSubResults: true,
+            showImages: false,
+            resetStyles: false,
+            translations: { placeholder: "Search guides & pages…" },
+          });
+        }
+      } catch (e) {
+        console.warn("Pagefind UI unavailable (run: npx pagefind --site rag_model_site).", e);
+      }
     </script>
   </body>
 </html>

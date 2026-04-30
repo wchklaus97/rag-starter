@@ -5,7 +5,7 @@ Small SwiftPM executable that depends on **[Swift-gemma4-core](https://github.co
 ## Requirements
 
 - **Apple Silicon** Mac or device (MLX is not supported on Intel/Linux at runtime).
-- **Swift 5.9+**, **macOS 14+** (or open the package in Xcode for iOS 17+).
+- **Swift 6**, **macOS 15+** / **iOS 18+** (see `Package.swift` platforms).
 - First run **downloads ~1.5 GB** model weights; ensure network access to Hugging Face.
 
 ## Build & run

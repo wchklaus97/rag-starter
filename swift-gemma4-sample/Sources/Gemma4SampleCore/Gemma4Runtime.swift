@@ -85,7 +85,11 @@ public actor Gemma4Runtime {
         onEvent(.registrationComplete)
 
         onEvent(.loadingModel(source.description))
-        container = try await LLMModelFactory.shared.loadContainer(configuration: source.configuration)
+        container = try await LLMModelFactory.shared.loadContainer(
+            from: Gemma4HuggingFaceDownloader(),
+            using: Gemma4TransformersTokenizerLoader(),
+            configuration: source.configuration
+        )
         onEvent(.modelLoaded)
     }
 

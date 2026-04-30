@@ -210,6 +210,13 @@ code {
   justify-content: flex-end;
 }
 
+/* Pagefind site search (bundle: rag_model_site/pagefind/ after CI or local npx pagefind) */
+.pagefind-site-search {
+  flex: 1 1 12rem;
+  max-width: min(22rem, 100%);
+  min-width: 8rem;
+}
+
 /* Guide map (section overlay) — open control */
 .map-open-btn {
   display: inline-flex;
