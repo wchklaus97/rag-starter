@@ -6,6 +6,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "anthropic",
+  "llama-index-core>=0.11.0",
+  "llama-index-embeddings-openai>=0.3.0",
+  "llama-index-retrievers-bm25>=0.3.0",
   "numpy",
   "openai",
   "python-dotenv",
@@ -16,3 +19,6 @@ dependencies = [
 dev = [
   "pytest",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

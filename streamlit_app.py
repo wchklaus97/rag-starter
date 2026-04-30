@@ -8,6 +8,7 @@ from typing import Any
 
 from anthropic import Anthropic
 from dotenv import load_dotenv
+from llama_index.embeddings.openai import OpenAIEmbedding
 from openai import OpenAI
 import streamlit as st
 
@@ -17,18 +18,15 @@ from kb_rag import (
     DEFAULT_EMBEDDING_MODEL,
     DEFAULT_MIN_SCORE,
     DEFAULT_TOP_K,
-    IndexedChunk,
-    SearchHit,
     answer_with_claude,
     answer_with_openai,
     build_answer_prompt,
-    embed_query,
     format_source_excerpt,
     index_documents_with_openai,
     insufficient_context_message,
     load_demo_documents,
     load_uploaded_documents,
-    retrieve,
+    retrieve_hybrid,
 )
 
 
@@ -48,7 +46,8 @@ def main() -> None:
     st.title("Internal KB Assistant Demo")
     st.caption(
         "Upload 3-5 internal docs, ask a question, and get an answer with citations. "
-        "Embeddings always use OpenAI for the simplest RAG setup."
+        "Retrieval is hybrid: dense vectors (OpenAI embeddings) + BM25, merged with RRF. "
+        "Source panel shows whether each chunk ranked in the vector index, BM25, or both."
     )
     _demo_manifest = _load_demo_manifest()
     _model_guide = _load_model_guide()
@@ -368,13 +367,16 @@ def _render_qa(
             return
 
         try:
-            embedding_client = OpenAI(api_key=openai_key)
-            question_embedding = embed_query(embedding_client, question, model=embedding_model)
-            hits = retrieve(
-                question_embedding,
+            embed_model = OpenAIEmbedding(
+                api_key=openai_key,
+                model=embedding_model,
+            )
+            hits = retrieve_hybrid(
+                question,
                 st.session_state.indexed_chunks,
+                embed_model,
                 top_k=top_k,
-                min_score=min_score,
+                min_vector_score=min_score,
             )
             if not hits:
                 answer = insufficient_context_message()
@@ -403,8 +405,34 @@ def _render_qa(
             st.info("No relevant source chunks were retrieved for the last answer.")
         else:
             for hit in st.session_state.last_hits:
-                with st.expander(f"{hit.chunk.label} | score={hit.score:.3f}"):
+                channels = []
+                if hit.vector_rank is not None:
+                    channels.append("vector")
+                if hit.bm25_rank is not None:
+                    channels.append("BM25")
+                channel_tag = "+".join(channels) if channels else "unknown"
+                title = f"{hit.chunk.label} | RRF={hit.score:.4f} | channels={channel_tag}"
+                with st.expander(title):
                     st.caption(f"File: {hit.chunk.file_name}")
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        st.markdown(
+                            "**Vector** — "
+                            + (
+                                f"rank {hit.vector_rank}, sim {hit.vector_similarity:.3f}"
+                                if hit.vector_rank is not None and hit.vector_similarity is not None
+                                else "not in top‑K (or below min similarity)"
+                            )
+                        )
+                    with c2:
+                        st.markdown(
+                            "**BM25** — "
+                            + (
+                                f"rank {hit.bm25_rank}, score {hit.bm25_score:.3f}"
+                                if hit.bm25_rank is not None and hit.bm25_score is not None
+                                else "not in top‑K"
+                            )
+                        )
                     st.write(format_source_excerpt(hit.chunk.text, max_chars=400))
 
 

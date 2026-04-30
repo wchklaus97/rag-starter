@@ -1,0 +1,12 @@
+{
+  "name": "rag-starter-pages-build",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:kb-demo": "node scripts/build_kb_hybrid_demo.mjs",
+    "test:kb-hybrid": "node --test tests/kb_hybrid_browser/*.test.mjs"
+  },
+  "dependencies": {
+    "@xenova/transformers": "2.17.2"
+  }
+}
