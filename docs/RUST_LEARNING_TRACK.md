@@ -2,6 +2,8 @@
 
 This guide covers the interactive CLI agent built in Rust using `rig`.
 
+**Release binaries, publisher checklist, and step-by-step tutorials:** see [SHIP_PUBLISH_AND_TEACH.md](./SHIP_PUBLISH_AND_TEACH.md).
+
 ## Prerequisites
 
 Pick one backend:
@@ -13,7 +15,7 @@ Pick one backend:
 ## Run
 
 ```bash
-cd /Users/klaus_mac/Projects/04-Experiments/rag-starter
+cd /path/to/rag-starter
 
 # Optional: workspace root for file tools + chat.json (defaults to current directory)
 export WORKSPACE_DIR="$PWD"
@@ -41,6 +43,9 @@ Environment:
 | `RAG_CHUNK_OVERLAP` | `200` | Overlap between adjacent chunks |
 | `RAG_TOP_K` | `4` | Max retrieved chunks per question |
 | `RAG_MIN_SCORE` | `0.20` | Minimum cosine similarity for retrieved chunks |
+| `DEBUG_NDJSON_PATH` | unset | When set to a non-empty path, append NDJSON debug events (secrets redacted); no file I/O when unset |
+| `DEBUG_SESSION_ID` | `rag-starter` | `sessionId` field in NDJSON lines (override for multi-run correlation) |
+| `RAG_STARTER_MCP_STDIO_JSON` | unset | JSON array: `[program, ...args]` for an optional MCP server over stdio; when set, agent gets `call_mcp_stdio_tool` |
 
 Type `quit` or `exit` to stop. History is saved to `WORKSPACE_DIR/chat.json` after each reply.
 
@@ -64,6 +69,7 @@ Each chat turn:
 | `read_file` | Read UTF-8 text under workspace (relative path) |
 | `list_directory` | List names in a directory under workspace |
 | `run_safe_shell` | Runs only: `ls`, `pwd`, `date`, `echo`, `whoami`, `uname` (cwd = workspace; no pipes/redirection) |
+| `call_mcp_stdio_tool` | Present only when `RAG_STARTER_MCP_STDIO_JSON` is set: calls a named tool on the configured MCP stdio server with optional JSON `arguments` |
 
 ## First-time compile
 

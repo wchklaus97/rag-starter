@@ -4,6 +4,8 @@
 > **Goal:** Build a personal AI agent in Rust that can use tools (read files, call APIs, do tasks).
 > **Pace:** ~30 min/day. Total: ~6 weeks.
 > **Starting point:** New to Rust, comfortable with the borrow checker fights, no LLM experience.
+>
+> **Ship & teach:** If you maintain or share this CLI, keep release flow and tutorials in sync with [docs/SHIP_PUBLISH_AND_TEACH.md](./docs/SHIP_PUBLISH_AND_TEACH.md).
 
 ---
 

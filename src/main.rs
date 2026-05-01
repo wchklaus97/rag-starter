@@ -3,6 +3,7 @@
 mod agent_tools;
 mod chat;
 mod debug_ndjson;
+mod mcp_tool;
 mod rag;
 mod schemas;
 mod session;
@@ -15,6 +16,7 @@ use std::path::PathBuf;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    dotenvy::dotenv().ok();
     let run_id = std::env::var("DEBUG_RUN_ID").unwrap_or_else(|_| "pre-fix".into());
     // #region agent log
     debug_ndjson::log(
@@ -24,12 +26,13 @@ async fn main() -> Result<()> {
         serde_json::json!({
             "workspace_env_set": std::env::var("WORKSPACE_DIR").is_ok(),
             "model_source": std::env::var("MODEL_SOURCE").unwrap_or_else(|_| "ollama".into()),
-            "demo": std::env::var("RAG_STARTER_DEMO").unwrap_or_default()
+            "demo": std::env::var("RAG_STARTER_DEMO").unwrap_or_default(),
+            "debug_ndjson": std::env::var("DEBUG_NDJSON_PATH").is_ok(),
+            "mcp_stdio_tool": crate::agent_tools::mcp_stdio_tool_enabled(),
         }),
         &run_id,
     );
     // #endregion
-    dotenvy::dotenv().ok();
     tracing_subscriber::fmt()
         .with_env_filter(
             tracing_subscriber::EnvFilter::try_from_default_env()

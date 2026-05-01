@@ -1,9 +1,8 @@
-//! Debug-mode NDJSON logger (session fe9600). Do not log secrets.
+//! Optional NDJSON logger for debug sessions. Do not log secrets.
+//!
+//! When `DEBUG_NDJSON_PATH` is unset or empty, [`log`](log) is a no-op.
 
 // #region agent log
-const LOG_PATH: &str = "/Users/klaus_mac/Projects/04-Experiments/rag-starter/.cursor/debug-fe9600.log";
-const SESSION_ID: &str = "fe9600";
-
 use once_cell::sync::Lazy;
 use regex::Regex;
 
@@ -38,6 +37,24 @@ fn sanitize_secrets(value: &mut serde_json::Value) {
     }
 }
 
+fn log_path() -> Option<std::path::PathBuf> {
+    let raw = std::env::var("DEBUG_NDJSON_PATH").ok()?;
+    let t = raw.trim();
+    if t.is_empty() {
+        None
+    } else {
+        Some(std::path::PathBuf::from(t))
+    }
+}
+
+fn session_id() -> String {
+    std::env::var("DEBUG_SESSION_ID")
+        .ok()
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| "rag-starter".to_string())
+}
+
 pub fn log(
     hypothesis_id: &str,
     location: &str,
@@ -45,8 +62,11 @@ pub fn log(
     mut data: serde_json::Value,
     run_id: &str,
 ) {
+    let Some(path) = log_path() else {
+        return;
+    };
     sanitize_secrets(&mut data);
-    if let Some(parent) = std::path::Path::new(LOG_PATH).parent() {
+    if let Some(parent) = path.parent() {
         let _ = std::fs::create_dir_all(parent);
     }
     let ts = std::time::SystemTime::now()
@@ -54,7 +74,7 @@ pub fn log(
         .map(|d| d.as_millis())
         .unwrap_or(0);
     let payload = serde_json::json!({
-        "sessionId": SESSION_ID,
+        "sessionId": session_id(),
         "hypothesisId": hypothesis_id,
         "location": location,
         "message": message,
@@ -65,7 +85,7 @@ pub fn log(
     if let Ok(mut f) = std::fs::OpenOptions::new()
         .create(true)
         .append(true)
-        .open(LOG_PATH)
+        .open(&path)
     {
         let _ = std::io::Write::write_all(&mut f, format!("{payload}\n").as_bytes());
     }

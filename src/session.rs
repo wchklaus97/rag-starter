@@ -1,6 +1,9 @@
 //! Build a provider-specific `Agent` and expose a single `chat` entry point.
 
-use crate::agent_tools::{GetCurrentTime, GetWeather, ListDir, ReadFile, RunSafeShell};
+use crate::agent_tools::{
+    mcp_stdio_tool_enabled, CallMcpStdioTool, GetCurrentTime, GetWeather, ListDir, ReadFile,
+    RunSafeShell,
+};
 use crate::schemas::{DiffSummary, ReviewComment};
 use crate::debug_ndjson;
 use crate::rag::RagEngine;
@@ -12,9 +15,19 @@ use rig::providers::openai::responses_api::ResponsesCompletionModel;
 use rig::providers::{deepseek, ollama, openai};
 use std::path::PathBuf;
 
-const PREAMBLE: &str = "You are a capable assistant. You speak with light pirate flair (arr, matey) but stay accurate and concise. \
+const PREAMBLE_BASE: &str = "You are a capable assistant. You speak with light pirate flair (arr, matey) but stay accurate and concise. \
 When the user asks for the current time, weather, files, directory listings, or an allowed shell command, you MUST call the matching tool — do not invent facts. \
 When retrieved workspace context is provided in the prompt, use it carefully, cite it like [path#chunkN], and admit when the indexed context is insufficient.";
+
+fn agent_preamble() -> String {
+    let mut out = PREAMBLE_BASE.to_string();
+    if mcp_stdio_tool_enabled() {
+        out.push_str(
+            "\nOne MCP server over stdio is configured (`call_mcp_stdio_tool`): use it when the user's request matches a capability exposed by that server.",
+        );
+    }
+    out
+}
 
 enum BackendAgent {
     Ollama(Agent<ollama::CompletionModel, ()>),
@@ -92,16 +105,19 @@ impl ChatSession {
             "ollama" => {
                 let client = ollama::Client::new(Nothing).context("ollama client")?;
                 let model = std::env::var("OLLAMA_MODEL").unwrap_or_else(|_| "qwen2.5:3b".into());
-                let agent = client
+                let preamble = agent_preamble();
+                let mut builder = client
                     .agent(model)
-                    .preamble(PREAMBLE)
+                    .preamble(preamble.as_str())
                     .tool(GetCurrentTime)
                     .tool(GetWeather)
                     .tool(ReadFile::new(root.clone()))
                     .tool(ListDir::new(root.clone()))
-                    .tool(RunSafeShell::new(root.clone()))
-                    .default_max_turns(24)
-                    .build();
+                    .tool(RunSafeShell::new(root.clone()));
+                if mcp_stdio_tool_enabled() {
+                    builder = builder.tool(CallMcpStdioTool);
+                }
+                let agent = builder.default_max_turns(24).build();
                 debug_ndjson::log(
                     "H1",
                     "session.rs:build",
@@ -115,16 +131,19 @@ impl ChatSession {
                 let client = deepseek::Client::from_env();
                 let model =
                     std::env::var("DEEPSEEK_MODEL").unwrap_or_else(|_| "deepseek-chat".into());
-                let agent = client
+                let preamble = agent_preamble();
+                let mut builder = client
                     .agent(model)
-                    .preamble(PREAMBLE)
+                    .preamble(preamble.as_str())
                     .tool(GetCurrentTime)
                     .tool(GetWeather)
                     .tool(ReadFile::new(root.clone()))
                     .tool(ListDir::new(root.clone()))
-                    .tool(RunSafeShell::new(root.clone()))
-                    .default_max_turns(24)
-                    .build();
+                    .tool(RunSafeShell::new(root.clone()));
+                if mcp_stdio_tool_enabled() {
+                    builder = builder.tool(CallMcpStdioTool);
+                }
+                let agent = builder.default_max_turns(24).build();
                 debug_ndjson::log(
                     "H1",
                     "session.rs:build",
@@ -137,16 +156,19 @@ impl ChatSession {
             "openai" => {
                 let client = openai::Client::from_env();
                 let model = std::env::var("OPENAI_MODEL").unwrap_or_else(|_| "gpt-4o-mini".into());
-                let agent = client
+                let preamble = agent_preamble();
+                let mut builder = client
                     .agent(model)
-                    .preamble(PREAMBLE)
+                    .preamble(preamble.as_str())
                     .tool(GetCurrentTime)
                     .tool(GetWeather)
                     .tool(ReadFile::new(root.clone()))
                     .tool(ListDir::new(root.clone()))
-                    .tool(RunSafeShell::new(root.clone()))
-                    .default_max_turns(24)
-                    .build();
+                    .tool(RunSafeShell::new(root.clone()));
+                if mcp_stdio_tool_enabled() {
+                    builder = builder.tool(CallMcpStdioTool);
+                }
+                let agent = builder.default_max_turns(24).build();
                 debug_ndjson::log(
                     "H1",
                     "session.rs:build",

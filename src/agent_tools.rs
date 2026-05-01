@@ -391,3 +391,67 @@ impl Tool for RunSafeShell {
         ))
     }
 }
+
+// --- MCP stdio (optional; see `RAG_STARTER_MCP_STDIO_JSON`) ---
+
+/// True when `RAG_STARTER_MCP_STDIO_JSON` is set to a valid non-empty JSON string array.
+pub fn mcp_stdio_tool_enabled() -> bool {
+    crate::mcp_tool::stdio_argv_from_env().is_some()
+}
+
+#[derive(Deserialize)]
+pub struct CallMcpStdioArgs {
+    /// MCP server tool name
+    tool_name: String,
+    /// Optional JSON object of arguments for that tool
+    #[serde(default)]
+    arguments: Option<serde_json::Value>,
+}
+
+#[derive(Clone, Copy, Serialize, Deserialize)]
+pub struct CallMcpStdioTool;
+
+impl Tool for CallMcpStdioTool {
+    const NAME: &'static str = "call_mcp_stdio_tool";
+    type Error = ToolErr;
+    type Args = CallMcpStdioArgs;
+    type Output = String;
+
+    async fn definition(&self, _prompt: String) -> ToolDefinition {
+        ToolDefinition {
+            name: Self::NAME.to_string(),
+            description: "Call a tool on an MCP server running over stdio. The server command is configured by the operator via RAG_STARTER_MCP_STDIO_JSON (JSON array: program + args). Pass the MCP tool name and an optional JSON object of arguments.".to_string(),
+            parameters: json!({
+                "type": "object",
+                "properties": {
+                    "tool_name": { "type": "string", "description": "Name of the tool on the MCP server" },
+                    "arguments": { "type": "object", "description": "Optional tool arguments (plain JSON object)", "additionalProperties": true }
+                },
+                "required": ["tool_name"]
+            }),
+        }
+    }
+
+    async fn call(&self, args: Self::Args) -> Result<Self::Output, Self::Error> {
+        let Some(argv) = crate::mcp_tool::stdio_argv_from_env() else {
+            return Err(ToolErr::msg(
+                "MCP stdio is not configured: set RAG_STARTER_MCP_STDIO_JSON to a JSON array of strings.",
+            ));
+        };
+
+        let arguments = match args.arguments {
+            None => None,
+            Some(serde_json::Value::Object(map)) => Some(map),
+            Some(other) => {
+                return Err(ToolErr(format!(
+                    "arguments must be a JSON object or omitted; got {}",
+                    serde_json::to_string(&other).unwrap_or_else(|_| "opaque value".into())
+                )));
+            }
+        };
+
+        crate::mcp_tool::call_stdio_tool_once(argv, args.tool_name, arguments)
+            .await
+            .map_err(ToolErr)
+    }
+}

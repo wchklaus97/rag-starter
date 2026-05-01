@@ -26,5 +26,9 @@ This document outlines the security protocols for handling API keys, tokens, and
     2. **Rotate** the key by generating a new one and updating your `.env` file.
     3. **Purge** history if committed to Git (using `git filter-repo` or similar tools).
 
-## 5. Mutating Workflows
+## 5. MCP stdio subprocess (`RAG_STARTER_MCP_STDIO_JSON`)
+- When this variable is set, the CLI spawns the **exact** program and arguments given in the JSON array and exposes `call_mcp_stdio_tool` to the model.
+- Treat it like **arbitrary subprocess execution**: only point it at binaries you trust, on machines you control; do not paste untrusted values into `.env` or shell exports. Remove the variable when MCP is not needed.
+
+## 6. Mutating Workflows
 - Before implementing tools that can mutate external state (e.g., `write_file`, `send_email`, `execute_unrestricted_shell`), an additional security review of the tool's access scope is required.

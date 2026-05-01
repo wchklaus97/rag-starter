@@ -2,6 +2,8 @@
 
 Follow this checklist to verify that the `rag-starter` repository is fully functional and ready for pilot users.
 
+For **shipping pre-built binaries** (GitHub Releases) and classroom-style usage steps, align with [SHIP_PUBLISH_AND_TEACH.md](./SHIP_PUBLISH_AND_TEACH.md) §8 checklist and §5 tutorials.
+
 ## 1. iOS Mobile App 📱
 
 ### [ ] Multi-Turn Conversation (Memory)
@@ -29,9 +31,10 @@ Follow this checklist to verify that the `rag-starter` repository is fully funct
 ## 2. Rust CLI Agent 🦀
 
 ### [ ] Log Sanitization (Security)
+- **Action**: Choose a log path and enable NDJSON debug logging, e.g. `export DEBUG_NDJSON_PATH=/tmp/rag-starter-debug.ndjson` (optional: `export DEBUG_SESSION_ID=my-uat-session`). Start the agent from a directory that loads `.env` if you put these there.
 - **Action**: Run the agent and send a message containing a fake key: `My key is sk-proj-1234567890abcdef1234567890abcdef12345678`.
-- **Action**: Open `.cursor/debug-fe9600.log`.
-- **Success**: Search for the key. It should be replaced with `[REDACTED_SECRET]`.
+- **Action**: Open the file named in `DEBUG_NDJSON_PATH`.
+- **Success**: Search for the key. It should be replaced with `[REDACTED_SECRET]`. Note: if `DEBUG_NDJSON_PATH` is unset or empty, debug file logging is disabled and this check does not apply.
 
 ### [ ] Structured Output (Slash Commands)
 - **Action**: Type `/summarize src/main.rs`.
