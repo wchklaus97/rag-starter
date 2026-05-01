@@ -35,7 +35,7 @@ Treat `Cargo.toml` as **edit**, not blind overwrite (see below).
    - `[package] name = "rust-ai-agent"` (not `rag-starter`).
 2. **`.gitignore`** — keep split-repo ignore (or merge); monorepo may list extra paths.
 3. **`README.md`** — split repo already describes **rust-ai-agent**; refresh **only** if env vars or run instructions changed in monorepo.
-4. Optional: document `DEBUG_RUN_ID` / `debug_ndjson` if you keep `src/debug_ndjson.rs`.
+4. Optional: document optional NDJSON debug + correlation env vars if you keep `src/debug_ndjson.rs`: `DEBUG_NDJSON_PATH` (file append, redacted), `DEBUG_SESSION_ID` (JSON `sessionId`, default `rag-starter`), `DEBUG_RUN_ID` (per-event `runId` passed from call sites; default in code if unset). Optional MCP: `RAG_STARTER_MCP_STDIO_JSON` → see monorepo `docs/RUST_LEARNING_TRACK.md`.
 
 ### Verify
 

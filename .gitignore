@@ -19,3 +19,9 @@ rag_model_site/pagefind/
 .cursor/skills/rag-starter
 .codex/skills/gstack
 .codex/skills/rag-starter
+
+# macOS / Xcode (never commit machine-local state)
+.DS_Store
+**/xcuserdata/**
+*.xcuserstate
+build_output.log
