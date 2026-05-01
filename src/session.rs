@@ -1,6 +1,7 @@
 //! Build a provider-specific `Agent` and expose a single `chat` entry point.
 
 use crate::agent_tools::{GetCurrentTime, GetWeather, ListDir, ReadFile, RunSafeShell};
+use crate::schemas::{DiffSummary, ReviewComment};
 use crate::debug_ndjson;
 use crate::rag::RagEngine;
 use anyhow::{Context, Result};
@@ -246,5 +247,58 @@ impl ChatSession {
         }
 
         res.map_err(anyhow::Error::from)
+    }
+
+    /// High-reliability task: Summarize a code diff into a structured schema.
+    pub async fn summarize_diff(&self, diff_text: &str) -> Result<DiffSummary> {
+        let prompt = format!(
+            "Analyze the following code diff and provide a structured summary in JSON format.\n\
+            DO NOT include any text before or after the JSON block.\n\n\
+            Diff:\n{}\n\n\
+            JSON Schema:\n\
+            {{ \"summary\": \"string\", \"files_changed\": [\"string\"], \"risk_level\": \"Low|Medium|High|Critical\", \"suggested_reviewers\": [\"string\"], \"reasoning\": \"string\" }}",
+            diff_text
+        );
+
+        let response = self.chat(vec![], &prompt).await?;
+        
+        // Basic JSON extraction from markdown if present
+        let json_str = if let Some(start) = response.find('{') {
+            if let Some(end) = response.rfind('}') {
+                &response[start..=end]
+            } else {
+                &response
+            }
+        } else {
+            &response
+        };
+
+        serde_json::from_str(json_str).context("failed to parse DiffSummary from agent output")
+    }
+
+    /// High-reliability task: Draft a review comment into a structured schema.
+    pub async fn draft_review_comment(&self, context: &str) -> Result<ReviewComment> {
+        let prompt = format!(
+            "Draft a code review comment for the following context and provide it in JSON format.\n\
+            DO NOT include any text before or after the JSON block.\n\n\
+            Context:\n{}\n\n\
+            JSON Schema:\n\
+            {{ \"file\": \"string\", \"line\": number, \"comment\": \"string\", \"severity\": \"Note|Warning|Error\" }}",
+            context
+        );
+
+        let response = self.chat(vec![], &prompt).await?;
+        
+        let json_str = if let Some(start) = response.find('{') {
+            if let Some(end) = response.rfind('}') {
+                &response[start..=end]
+            } else {
+                &response
+            }
+        } else {
+            &response
+        };
+
+        serde_json::from_str(json_str).context("failed to parse ReviewComment from agent output")
     }
 }

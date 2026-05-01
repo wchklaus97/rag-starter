@@ -4,6 +4,7 @@ mod agent_tools;
 mod chat;
 mod debug_ndjson;
 mod rag;
+mod schemas;
 mod session;
 
 use anyhow::Result;
@@ -106,6 +107,7 @@ async fn main() -> Result<()> {
     }
 
     println!("Chat session (pirate-flavored assistant with tools). Type 'quit' or 'exit' to leave.");
+    println!("Commands: /summarize <path>, /review <path>");
     println!("Workspace: {}", workspace.display());
     println!("MODEL_SOURCE={source}\n");
     if let Some(status) = session.rag_status_line() {
@@ -127,6 +129,46 @@ async fn main() -> Result<()> {
         if line.eq_ignore_ascii_case("quit") || line.eq_ignore_ascii_case("exit") {
             break;
         }
+
+        // --- Slash Commands (High Reliability Tasks) ---
+        if line.starts_with("/summarize ") {
+            let path_str = line.trim_start_matches("/summarize ").trim();
+            let path = workspace.join(path_str);
+            match std::fs::read_to_string(&path) {
+                Ok(content) => {
+                    println!("[task] Summarizing {}...", path_str);
+                    match session.summarize_diff(&content).await {
+                        Ok(summary) => {
+                            let json = serde_json::to_string_pretty(&summary).unwrap_or_default();
+                            println!("bot> (Structured Summary)\n{}\n", json);
+                        }
+                        Err(e) => eprintln!("error: failed to summarize: {e:#}"),
+                    }
+                }
+                Err(e) => eprintln!("error: could not read file {}: {e}", path.display()),
+            }
+            continue;
+        }
+
+        if line.starts_with("/review ") {
+            let path_str = line.trim_start_matches("/review ").trim();
+            let path = workspace.join(path_str);
+            match std::fs::read_to_string(&path) {
+                Ok(content) => {
+                    println!("[task] Drafting review for {}...", path_str);
+                    match session.draft_review_comment(&content).await {
+                        Ok(comment) => {
+                            let json = serde_json::to_string_pretty(&comment).unwrap_or_default();
+                            println!("bot> (Structured Review)\n{}\n", json);
+                        }
+                        Err(e) => eprintln!("error: failed to review: {e:#}"),
+                    }
+                }
+                Err(e) => eprintln!("error: could not read file {}: {e}", path.display()),
+            }
+            continue;
+        }
+        // -----------------------------------------------
 
         let history = conversation.rig_history();
         match session.chat(history, line).await {

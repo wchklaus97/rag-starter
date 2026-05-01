@@ -2,9 +2,17 @@
 """
 Refresh embedding model pricing and metadata from OpenRouter into rag_model_site/data/models.json.
 
-Requires: OPENROUTER_API_KEY in the environment (same key you use for OpenRouter API).
+Dependencies: stdlib only (urllib). Optionally set OPENROUTER_API_KEY for authenticated requests.
 
-Uses: GET https://openrouter.ai/api/v1/embeddings/models
+OpenRouter endpoints (see https://openrouter.ai/docs/api/reference/overview ):
+
+- **General model catalog:** ``GET https://openrouter.ai/api/v1/models``
+  (spec: https://openrouter.ai/docs/api/api-reference/models/get-models ).
+  Response: ``{ "data": [ { "id", "name", "pricing": { "prompt", "completion", ... }, "architecture", ... } ] }``.
+  Pricing values are strings in USD (typically per token; see OpenRouter pricing docs).
+
+- **Embedding models (what this script uses):** ``GET https://openrouter.ai/api/v1/embeddings/models``
+  Listing is embedding-focused and is available without an API key for reads in typical setups.
 
 Preserves: ui, recommendations, testingPlan, and per-model bilingual fields (strengths, bestFor,
 longNote, tags) from the existing JSON. Updates: pricePerMillionInputTokens, outputPricePerMillionTokens,
@@ -12,6 +20,12 @@ provider (from id prefix if missing), sourceUrls, and schema version metadata.
 
 Optional: --include-all-api-models appends any API embedding id not already listed, with tag
 openrouterCatalog and minimal bilingual stubs (for a full browseable catalog on the static site).
+
+Run (repo root)::
+
+    python3 scripts/collect_openrouter_models.py
+
+Optional: ``OPENROUTER_API_KEY=sk-or-...`` if your environment requires auth for the embeddings listing.
 """
 
 from __future__ import annotations
@@ -32,15 +46,15 @@ MD_ROOT = ROOT / "OPENROUTER_EMBEDDING_MODELS.md"
 MD_DOCS = ROOT / "rag_model_site" / "OPENROUTER_EMBEDDING_MODELS.md"
 
 
-def _fetch_json(url: str, api_key: str) -> dict:
-    req = urllib.request.Request(
-        url,
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "HTTP-Referer": "https://github.com",  # OpenRouter may expect a referer
-            "X-Title": "rag-starter-model-collector",
-        },
-    )
+def _fetch_json(url: str, api_key: str | None) -> dict:
+    headers = {
+        "Accept": "application/json",
+        "HTTP-Referer": "https://github.com",
+        "X-Title": "rag-starter-model-collector",
+    }
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=60) as resp:
         return json.loads(resp.read().decode())
 
@@ -238,10 +252,7 @@ def main() -> int:
         args.include_all_api_models,
     )
 
-    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-    if not api_key:
-        print("Error: set OPENROUTER_API_KEY in the environment.", file=sys.stderr)
-        return 1
+    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip() or None
 
     try:
         res = _fetch_json(OPENROUTER_EMBEDDINGS_MODELS, api_key)

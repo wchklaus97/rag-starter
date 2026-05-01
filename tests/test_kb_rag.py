@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from llama_index.core import MockEmbedding
+
 from kb_rag import (
     IndexedChunk,
     SearchHit,
@@ -13,7 +15,9 @@ from kb_rag import (
     cosine_similarity,
     insufficient_context_message,
     load_demo_documents,
+    reciprocal_rank_fusion,
     retrieve,
+    retrieve_hybrid,
 )
 
 
@@ -127,3 +131,71 @@ def test_empty_retrieval_supports_low_context_message() -> None:
 
     assert hits == []
     assert "don't have enough indexed context" in insufficient_context_message()
+
+
+def test_reciprocal_rank_fusion_orders_overlap() -> None:
+    fused = reciprocal_rank_fusion([["a", "b"], ["b", "c"]], rrf_k=60)
+    ids = [i for i, _ in fused]
+    assert ids[0] == "b"
+
+
+def test_retrieve_hybrid_marks_vector_and_bm25_ranks() -> None:
+    emb = MockEmbedding(embed_dim=16)
+    chunks = [
+        IndexedChunk(
+            label="doc.md#chunk0",
+            file_name="doc.md",
+            source_path="doc.md",
+            chunk_index=0,
+            start_char=0,
+            end_char=10,
+            text="quantum encryption standards",
+            embedding=list(emb.get_text_embedding("quantum encryption standards")),
+        ),
+        IndexedChunk(
+            label="doc.md#chunk1",
+            file_name="doc.md",
+            source_path="doc.md",
+            chunk_index=1,
+            start_char=10,
+            end_char=20,
+            text="lunch menu sandwiches",
+            embedding=list(emb.get_text_embedding("lunch menu sandwiches")),
+        ),
+    ]
+    hits = retrieve_hybrid(
+        "encryption quantum",
+        chunks,
+        emb,
+        top_k=2,
+        min_vector_score=0.0,
+        vector_candidate_k=4,
+        bm25_candidate_k=4,
+    )
+    assert hits
+    assert hits[0].vector_rank is not None or hits[0].bm25_rank is not None
+    assert "fused_rrf=" in build_answer_prompt("q", hits)
+
+
+def test_build_answer_prompt_hybrid_includes_fused_header() -> None:
+    hit = SearchHit(
+        score=0.0321,
+        chunk=IndexedChunk(
+            label="policy.md#chunk2",
+            file_name="policy.md",
+            source_path="policy.md",
+            chunk_index=2,
+            start_char=0,
+            end_char=20,
+            text="Manager approval is required.",
+            embedding=[1.0, 0.0],
+        ),
+        vector_rank=1,
+        bm25_rank=2,
+        vector_similarity=0.88,
+        bm25_score=0.41,
+    )
+    prompt = build_answer_prompt("Do I need approval?", [hit])
+    assert "fused_rrf=0.0321" in prompt
+    assert "vec_rank=1" in prompt
+    assert "bm25_rank=2" in prompt

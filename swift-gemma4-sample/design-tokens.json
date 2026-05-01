@@ -1,0 +1,60 @@
+{
+  "primitive": {
+    "color": {
+      "ink950": "#111827",
+      "ink700": "#374151",
+      "ink500": "#6B7280",
+      "paper50": "#F9FAFB",
+      "paper100": "#F3F4F6",
+      "line200": "#E5E7EB",
+      "blue600": "#2563EB",
+      "blue700": "#1D4ED8",
+      "amber600": "#D97706",
+      "green600": "#16A34A",
+      "red600": "#DC2626"
+    },
+    "space": {
+      "xs": 4,
+      "s": 8,
+      "m": 12,
+      "l": 16,
+      "xl": 24
+    },
+    "radius": {
+      "small": 8,
+      "medium": 12,
+      "large": 18
+    }
+  },
+  "semantic": {
+    "color": {
+      "background": "{primitive.color.paper50}",
+      "surface": "{primitive.color.paper100}",
+      "border": "{primitive.color.line200}",
+      "textPrimary": "{primitive.color.ink950}",
+      "textSecondary": "{primitive.color.ink700}",
+      "textMuted": "{primitive.color.ink500}",
+      "accent": "{primitive.color.blue600}",
+      "accentPressed": "{primitive.color.blue700}",
+      "success": "{primitive.color.green600}",
+      "warning": "{primitive.color.amber600}",
+      "danger": "{primitive.color.red600}"
+    }
+  },
+  "component": {
+    "messageBubble": {
+      "userBackground": "{semantic.color.accent}",
+      "assistantBackground": "{semantic.color.surface}",
+      "radius": "{primitive.radius.medium}",
+      "padding": "{primitive.space.m}"
+    },
+    "statusPill": {
+      "ready": "{semantic.color.success}",
+      "loading": "{semantic.color.warning}",
+      "error": "{semantic.color.danger}",
+      "radius": "{primitive.radius.large}",
+      "horizontalPadding": "{primitive.space.m}",
+      "verticalPadding": "{primitive.space.xs}"
+    }
+  }
+}

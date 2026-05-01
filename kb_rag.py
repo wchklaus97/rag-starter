@@ -3,7 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 import math
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any, Sequence
+
+from llama_index.core import QueryBundle, VectorStoreIndex
+from llama_index.core.retrievers import VectorIndexRetriever
+from llama_index.core.schema import TextNode
+from llama_index.retrievers.bm25 import BM25Retriever
 
 
 ALLOWED_EXTENSIONS = {".md", ".txt"}
@@ -12,6 +17,9 @@ DEFAULT_CHUNK_OVERLAP = 200
 DEFAULT_TOP_K = 4
 DEFAULT_MIN_SCORE = 0.20
 DEFAULT_EMBEDDING_MODEL = "text-embedding-3-small"
+DEFAULT_RRF_K = 60
+DEFAULT_VECTOR_CANDIDATE_K = 24
+DEFAULT_BM25_CANDIDATE_K = 24
 
 
 @dataclass(frozen=True)
@@ -41,8 +49,14 @@ class IndexedChunk:
 
 @dataclass(frozen=True)
 class SearchHit:
+    """score is cosine similarity for vector-only retrieval, or RRF fused score for hybrid."""
+
     score: float
     chunk: IndexedChunk
+    vector_rank: int | None = None
+    bm25_rank: int | None = None
+    vector_similarity: float | None = None
+    bm25_score: float | None = None
 
 
 def is_supported_file(path: str | Path) -> bool:
@@ -166,7 +180,7 @@ def cosine_similarity(left: Sequence[float], right: Sequence[float]) -> float:
     if not left or not right or len(left) != len(right):
         return -1.0
 
-    dot = sum(l * r for l, r in zip(left, right))
+    dot = sum(a * b for a, b in zip(left, right))
     left_norm = math.sqrt(sum(value * value for value in left))
     right_norm = math.sqrt(sum(value * value for value in right))
 
@@ -194,11 +208,122 @@ def retrieve(
     return hits[: max(1, top_k)]
 
 
+def reciprocal_rank_fusion(
+    ranked_ids: Sequence[Sequence[str]],
+    *,
+    rrf_k: int = DEFAULT_RRF_K,
+) -> list[tuple[str, float]]:
+    """Standard RRF: score(id) += 1 / (k + rank) for each ranked list (rank is 1-based)."""
+    k = max(1, rrf_k)
+    fused: dict[str, float] = {}
+    for ids in ranked_ids:
+        for rank, node_id in enumerate(ids, start=1):
+            fused[node_id] = fused.get(node_id, 0.0) + 1.0 / (k + rank)
+    return sorted(fused.items(), key=lambda item: (-item[1], item[0]))
+
+
+def retrieve_hybrid(
+    query: str,
+    chunks: Sequence[IndexedChunk],
+    embed_model: Any,
+    top_k: int = DEFAULT_TOP_K,
+    min_vector_score: float = DEFAULT_MIN_SCORE,
+    vector_candidate_k: int = DEFAULT_VECTOR_CANDIDATE_K,
+    bm25_candidate_k: int = DEFAULT_BM25_CANDIDATE_K,
+    rrf_k: int = DEFAULT_RRF_K,
+) -> list[SearchHit]:
+    """BM25 + dense vector via LlamaIndex retrievers, merged with RRF (transparent ranks per source)."""
+    usable = [c for c in chunks if c.embedding is not None and c.text.strip()]
+    if not usable:
+        return []
+
+    nodes = [_chunk_to_text_node(c) for c in usable]
+    by_label = {c.label: c for c in usable}
+
+    index = VectorStoreIndex(nodes, embed_model=embed_model)
+    vector_retriever = VectorIndexRetriever(index, similarity_top_k=max(1, vector_candidate_k))
+    bm25_retriever = BM25Retriever(nodes=nodes, similarity_top_k=max(1, bm25_candidate_k))
+
+    bundle = QueryBundle(query_str=query)
+    vector_results = vector_retriever.retrieve(bundle)
+    bm25_results = bm25_retriever.retrieve(bundle)
+
+    vector_ids: list[str] = []
+    vector_meta: dict[str, float] = {}
+    for rank, hit in enumerate(vector_results, start=1):
+        nid = hit.node.node_id
+        sim = float(hit.score or 0.0)
+        if sim < min_vector_score:
+            continue
+        if nid not in vector_meta:
+            vector_meta[nid] = sim
+            vector_ids.append(nid)
+
+    bm25_ids: list[str] = []
+    bm25_meta: dict[str, float] = {}
+    for hit in bm25_results:
+        nid = hit.node.node_id
+        sc = float(hit.score or 0.0)
+        if nid not in bm25_meta:
+            bm25_meta[nid] = sc
+            bm25_ids.append(nid)
+
+    if not vector_ids and not bm25_ids:
+        return []
+
+    fused = reciprocal_rank_fusion([vector_ids, bm25_ids], rrf_k=rrf_k)
+    fused = fused[: max(1, top_k)]
+
+    vec_rank_by_id = {nid: i + 1 for i, nid in enumerate(vector_ids)}
+    bm25_rank_by_id = {nid: i + 1 for i, nid in enumerate(bm25_ids)}
+
+    hits: list[SearchHit] = []
+    for nid, fused_score in fused:
+        chunk = by_label.get(nid)
+        if chunk is None:
+            continue
+        hits.append(
+            SearchHit(
+                score=fused_score,
+                chunk=chunk,
+                vector_rank=vec_rank_by_id.get(nid),
+                bm25_rank=bm25_rank_by_id.get(nid),
+                vector_similarity=vector_meta.get(nid),
+                bm25_score=bm25_meta.get(nid),
+            )
+        )
+    return hits
+
+
+def _chunk_to_text_node(chunk: IndexedChunk) -> TextNode:
+    return TextNode(
+        text=chunk.text,
+        id_=chunk.label,
+        metadata={
+            "file_name": chunk.file_name,
+            "source_path": chunk.source_path,
+            "chunk_index": chunk.chunk_index,
+            "start_char": chunk.start_char,
+            "end_char": chunk.end_char,
+        },
+    )
+
+
 def build_answer_prompt(question: str, hits: Sequence[SearchHit]) -> str:
     lines = ["User question:", question, "", "Retrieved context:"]
     if hits:
         for hit in hits:
-            lines.append(f"[{hit.chunk.label} | score={hit.score:.3f}]")
+            if hit.vector_rank is not None or hit.bm25_rank is not None:
+                v_r = hit.vector_rank if hit.vector_rank is not None else "—"
+                b_r = hit.bm25_rank if hit.bm25_rank is not None else "—"
+                v_sim = hit.vector_similarity if hit.vector_similarity is not None else 0.0
+                b_s = hit.bm25_score if hit.bm25_score is not None else 0.0
+                lines.append(
+                    f"[{hit.chunk.label} | fused_rrf={hit.score:.4f} | vec_rank={v_r} | "
+                    f"bm25_rank={b_r} | vec_sim={v_sim:.3f} | bm25={b_s:.3f}]"
+                )
+            else:
+                lines.append(f"[{hit.chunk.label} | score={hit.score:.3f}]")
             lines.append(hit.chunk.text)
             lines.append("")
     else:
@@ -271,6 +396,9 @@ __all__ = [
     "DEFAULT_MIN_SCORE",
     "DEFAULT_TOP_K",
     "DEFAULT_EMBEDDING_MODEL",
+    "DEFAULT_RRF_K",
+    "DEFAULT_VECTOR_CANDIDATE_K",
+    "DEFAULT_BM25_CANDIDATE_K",
     "ChunkSlice",
     "IndexedChunk",
     "SearchHit",
@@ -289,5 +417,7 @@ __all__ = [
     "is_supported_file",
     "load_demo_documents",
     "load_uploaded_documents",
+    "reciprocal_rank_fusion",
     "retrieve",
+    "retrieve_hybrid",
 ]

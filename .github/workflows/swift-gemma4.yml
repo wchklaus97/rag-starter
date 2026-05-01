@@ -1,0 +1,29 @@
+name: Swift Gemma4 Sample Compile
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'swift-gemma4-sample/**'
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'swift-gemma4-sample/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    # Swift 6 + macOS 15 SDK (Package.swift uses swift-tools-version 6.0 and .macOS(.v15))
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      
+      # We just compile and run pure logic tests.
+      # We do NOT run `swift run gemma4-sample` to avoid 1.5GB model downloads.
+      - name: Build
+        working-directory: ./swift-gemma4-sample
+        run: swift build -c release
+        
+      - name: Run Tests
+        working-directory: ./swift-gemma4-sample
+        run: swift test

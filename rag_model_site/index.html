@@ -23,6 +23,7 @@
     </script>
     <link rel="stylesheet" href="assets/design-tokens.css" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="pagefind/pagefind-ui.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -48,6 +49,7 @@
           </nav>
         </div>
         <div class="header-actions">
+          <div class="pagefind-site-search" id="pagefind-site-search" aria-label="Site search"></div>
           <button
             type="button"
             class="map-open-btn"
@@ -239,6 +241,22 @@
       </div>
     </div>
 
+    <script type="module">
+      try {
+        await import("./pagefind/pagefind-ui.js");
+        if (window.PagefindUI) {
+          new window.PagefindUI({
+            element: "#pagefind-site-search",
+            showSubResults: true,
+            showImages: false,
+            resetStyles: false,
+            translations: { placeholder: "Search guides & pages…" },
+          });
+        }
+      } catch (e) {
+        console.warn("Pagefind UI unavailable (run: npx pagefind --site rag_model_site).", e);
+      }
+    </script>
     <script src="app.js" type="module"></script>
   </body>
 </html>
